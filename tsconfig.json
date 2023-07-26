@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "target": "ES2017",
+        "moduleResolution": "NodeNext",
+        "skipDefaultLibCheck": true,
+        "importHelpers": true,
+        "outDir": "dist",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "declaration": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "src/test.js", "dist"]
+}

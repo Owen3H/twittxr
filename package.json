@@ -1,0 +1,39 @@
+{
+  "name": "twittxr",
+  "version": "0.1.0",
+  "description": "Extract information from Twitter via the Syndication API without authentication.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/types.js",
+  "scripts": {
+    "test": "node src/test.js",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Owen3H/twittxr.git"
+  },
+  "keywords": [
+    "twitter",
+    "tweet",
+    "xdotcom",
+    "api-wrapper",
+    "twitter-api",
+    "syndication",
+    "scraper"
+  ],
+  "author": "Owen3H",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Owen3H/twittxr/issues"
+  },
+  "homepage": "https://github.com/Owen3H/twittxr#readme",
+  "dependencies": {
+    "tslib": "^2.6.1",
+    "undici": "^5.22.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.5",
+    "typescript": "^5.1.6"
+  }
+}
