@@ -28,6 +28,6 @@ npm i twittxr
 ```js
 import { Timeline } from 'twittxr'
 
-const tweets = await Timeline.get('pinkchyu', false, false)
+const tweets = await Timeline.get('elonmusk', false, false)
 console.log(tweets)
 ```
