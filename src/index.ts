@@ -1,16 +1,32 @@
-import { fetchData } from "./parser.js"
+import { extractTimelineData, sendReq } from "./util.js"
 import { RawTweet } from "./types.js"
 
 class Timeline {
     static url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
 
+    static async #fetchUserTimeline(url: string) {
+        const html = await sendReq(url).then(body => body.text())
+        const timeline = extractTimelineData(html)
+    
+        if (!timeline) {
+            console.error(new Error('Script tag not found or JSON data missing.'))
+            return null
+        }
+    
+        const data = JSON.parse(timeline)
+        return data?.props?.pageProps?.timeline?.entries
+    }
+
     static async get(username, includeReplies = false, includeRetweets = false) {
         const proxy = `https://corsproxy.io/?`
         const endpoint = proxy + this.url + username + `?showReplies=true`
-        const res = await fetchData(endpoint)
 
-        const tweets = res?.props?.pageProps?.timeline?.entries.map(e => new Tweet(e.content.tweet))
-        return tweets.filter(tweet => {
+        const timeline = await this.#fetchUserTimeline(endpoint)
+        if (!timeline) {
+            
+        }
+
+        return timeline.map(e => new Tweet(e.content.tweet)).filter(tweet => {
             const isRetweet = tweet.isRetweet() ?? false
             const isReply = tweet.isReply() ?? false
           
