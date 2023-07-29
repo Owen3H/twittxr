@@ -1,5 +1,5 @@
 import { extractTimelineData, sendReq } from "./util.js"
-import { RawTweet } from "./types.js"
+import { RawTweet, RawUser } from "./types.js"
 
 class Timeline {
     static url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
@@ -51,13 +51,17 @@ class Tweet {
     likeCount: number
 
     static domain = 'https://twitter.com'
+    user: RawUser
 
     constructor(data: RawTweet) {
         this.id = data.id_str
         this.text = data.text
         this.createdAt = data.created_at
-        this.inReplyToName = data.in_reply_to_name
         this.link = Tweet.domain + data.permalink
+        this.user = data.user
+
+        if (data.in_reply_to_name)
+            this.inReplyToName = data.in_reply_to_name
     }
  
     isRetweet = () => this.text.startsWith('RT @')

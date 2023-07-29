@@ -41,8 +41,6 @@ web_modules/
 .env.production.local
 .env.local
 
-dist
-
 # yarn v2
 .yarn/cache
 .yarn/unplugged
@@ -52,3 +50,5 @@ dist
 
 # Custom Exclusions
 src/test.js
+dist/
+vscode/
