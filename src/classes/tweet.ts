@@ -15,12 +15,14 @@ class TweetEmbed {
     inReplyToName: string
 
     constructor(data: any) {
-        this.conversationCount = data.conversation_count
         this.createdAt = data.created_at
         this.id = data.id_str
         this.text = data.text
         this.isEdited = data.isEdited
         this.entities = data.entities
+
+        const convoCount = data.conversation_count
+        if (convoCount) this.conversationCount = convoCount   
         
         const user = data.user
         if (user) this.user = new User(user)

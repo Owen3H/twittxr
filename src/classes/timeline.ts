@@ -32,8 +32,8 @@ export default class Timeline {
         if (!timeline) return
 
         return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => {
-            const isRetweet = tweet.isRetweet() ?? false
-            const isReply = tweet.isReply() ?? false
+            const isRetweet = tweet.isRetweet ?? false
+            const isReply = tweet.isReply ?? false
           
             return (includeRetweets === isRetweet) &&
                    (includeReplies === isReply)  
@@ -62,15 +62,23 @@ class TimelineTweet {
         this.text = data.text
         this.createdAt = data.created_at
         this.link = domain + data.permalink
+        this.quoteCount = data.quote_count
+        this.replyCount = data.reply_count
+        this.retweetCount = data.retweet_count
+        this.likeCount = data.favorite_count
         
-        if (this.user) this.user = new TimelineUser(data.user)
+        if (data.user) this.user = new TimelineUser(data.user)
         if (data.in_reply_to_name)
             this.inReplyToName = data.in_reply_to_name
     }
  
-    isRetweet = () => this.text.startsWith('RT @')
+    get isRetweet() {
+        return this.text.startsWith('RT @')
+    } 
 
-    isReply = () => !!this.inReplyToName
+    get isReply() { 
+        return !!this.inReplyToName
+    }
 }
 
 class TimelineUser extends User {
