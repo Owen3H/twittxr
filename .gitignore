@@ -53,4 +53,4 @@ web_modules/
 test.js
 
 dist/
-vscode/
+.vscode/

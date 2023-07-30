@@ -5,7 +5,7 @@ A simple library around the Twitter [Syndication API](https://syndication.twitte
 The Syndication API is what is used by embedded widgets, but has some significant limitations for trading ease-of-use. **Twittxr** is best suited for setting up a user feed or getting a single tweet.
 
 Benefits
-- Completely auth-free. (No login, tokens, cookies etc.)
+- Completely auth-free. (With optional session cookie for NSFW content)
 - Requests are proxied through [corsproxy.io](https://corsproxy.io).
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
 - Filter out retweets/replies.

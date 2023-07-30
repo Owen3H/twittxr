@@ -1,14 +1,14 @@
-type BaseUser = {
+export type BaseUser = {
     name: string
     screen_name: string
     id_str: string
 }
 
-type UserMention = BaseUser & {
+export type UserMention = BaseUser & {
     indices: number[]
 }
 
-type RawTimelineUser = BaseUser & {
+export type RawTimelineUser = BaseUser & {
     blocking: boolean
     created_at: string
     default_profile: boolean
@@ -29,9 +29,19 @@ type RawTimelineUser = BaseUser & {
     verified: boolean
     is_blue_verified: boolean
     url: string
+    entities: UserEntities
 }
 
-type TweetEntities = {
+export type UserEntities = {
+    description: {
+        urls: { [key: string]: string }
+    }
+    url: {
+        urls: { [key: string]: string }
+    }
+}
+
+export type TweetEntities = {
     hashtags?: any[]
     media?: any[]
     symbols: any[]
@@ -39,7 +49,7 @@ type TweetEntities = {
     user_mentions?: UserMention[]
 }
 
-type RawTimelineTweet = {
+export type RawTimelineTweet = {
     conversation_id_str: string
     id_str: string
     text: string
@@ -56,10 +66,4 @@ type RawTimelineTweet = {
     location: string
     retweeted_status?: RawTimelineTweet
     entities?: TweetEntities 
-}
-
-export {
-    RawTimelineTweet,
-    RawTimelineUser,
-    TweetEntities,
 }

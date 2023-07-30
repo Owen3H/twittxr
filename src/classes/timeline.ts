@@ -1,5 +1,6 @@
 import { extractTimelineData, sendReq } from "./util.js"
-import { RawTimelineTweet, RawTimelineUser } from "../types.js"
+import { RawTimelineTweet, RawTimelineUser, TweetEntities, UserEntities } from "../types.js"
+import User from "./user.js"
 
 const domain = 'https://twitter.com'
 
@@ -19,7 +20,11 @@ export default class Timeline {
         return data?.props?.pageProps?.timeline?.entries
     }
 
-    static async get(username, includeReplies = false, includeRetweets = false) {
+    static async get(
+        username, 
+        includeReplies = false, 
+        includeRetweets = false
+    ): Promise<TimelineTweet[]>{
         const proxy = `https://corsproxy.io/?`
         const endpoint = proxy + this.url + username + `?showReplies=true`
 
@@ -50,15 +55,15 @@ class TimelineTweet {
     retweetCount: number
     likeCount: number
 
-    user: RawTimelineUser
+    user: TimelineUser
 
     constructor(data: RawTimelineTweet) {
         this.id = data.id_str
         this.text = data.text
         this.createdAt = data.created_at
         this.link = domain + data.permalink
-        this.user = data.user
-
+        
+        if (this.user) this.user = new TimelineUser(data.user)
         if (data.in_reply_to_name)
             this.inReplyToName = data.in_reply_to_name
     }
@@ -68,6 +73,44 @@ class TimelineTweet {
     isReply = () => !!this.inReplyToName
 }
 
+class TimelineUser extends User {
+    blocking: boolean
+    createdAt: string
+    defaultProfile: boolean
+    defaultProfileImage: boolean
+    description: string
+    entities: UserEntities
+    followersCount: number
+    friendsCount: number
+    statusesCount: number
+    likesCount: number
+    mediaCount: number
+    location: string
+    protected: boolean
+    url: string
+
+    constructor(data: RawTimelineUser) {
+        super(data)
+
+        this.blocking = data.blocking
+        this.createdAt = data.created_at
+        this.defaultProfile = data.default_profile
+        this.defaultProfileImage = data.default_profile_image
+        this.entities = data.entities
+        this.followersCount = data.fast_followers_count
+        this.followersCount = data.normal_followers_count
+        this.likesCount = data.favourites_count
+        this.friendsCount = data.friends_count
+        this.mediaCount = data.media_count
+        this.statusesCount = data.statuses_count
+        this.location = data.location
+        this.url = data.url
+        this.protected = data.protected
+    }
+}
+
 export {
-    Timeline
+    Timeline,
+    TimelineTweet,
+    TimelineUser
 }
