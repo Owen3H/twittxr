@@ -39,13 +39,10 @@ export default class Timeline {
         // TODO: Properly handle error
         if (!timeline) return
 
-        return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => {
-            const isRetweet = tweet.isRetweet ?? false
-            const isReply = tweet.isReply ?? false
-          
-            return (options.retweets === isRetweet) &&
-                   (options.replies === isReply)  
-        });
+        return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => 
+            (options.retweets === tweet.isRetweet ?? false) &&
+            (options.replies === tweet.isReply ?? false)
+        );
     }
 
     static at = (username, index) => this.get(username).then(arr => arr[index])
