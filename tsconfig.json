@@ -7,12 +7,11 @@
         "importHelpers": true,
         "allowJs": true,
         "esModuleInterop": true,
-        "declaration": true,
         "baseUrl": ".",
         "paths": {
             "tslib" : ["node_modules/tslib/tslib.d.ts"]
         }
     },
     "include": ["src"],
-    "exclude": ["node_modules", "src/test.js", "dist"]
+    "exclude": ["node_modules", "test.js", "dist"]
 }

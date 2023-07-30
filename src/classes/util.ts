@@ -1,21 +1,5 @@
 import { request } from 'undici'
-
-class FetchError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'FetchError';
-    }
-}
-
-class HttpError extends Error {
-    code: number
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.name = 'HttpError';
-        this.code = statusCode
-    }
-}
+import { FetchError, ParseError, HttpError } from './errors.js'
 
 /**
  * Sends a request to the API with a mock user agent, returning either the
@@ -40,13 +24,19 @@ async function sendReq(url: string) {
  * @internal
  */
 const extractTimelineData = (html: string) => {
-    const regex = new RegExp('<script id="__NEXT_DATA__" type="application\/json">([^>]*)<\/script>')
-    const match = html.match(regex)
-  
-    if (match && match[1]) 
-      return match[1]
-    
-    return null
+    const scriptId = `__NEXT_DATA__`
+    const regex = new RegExp(`<script id="${scriptId}" type="application\/json">([^>]*)<\/script>`)
+
+    try {
+        const match = html.match(regex)
+        if (match && match[1]) return match[1]
+        
+        throw new ParseError(`No match found for '${scriptId}'`)
+    }
+    catch (e) {
+        console.error('Could not extract timeline data!\n' + e)
+        return null
+    }
 }
 
 export {

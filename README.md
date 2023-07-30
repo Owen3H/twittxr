@@ -1,8 +1,7 @@
 # twittxr
- Wrapper library for the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).
+A simple library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).
 
 ## About
-
 The Syndication API is what is used by embedded widgets, but has some significant limitations for trading ease-of-use. **Twittxr** is best suited for setting up a user feed or getting a single tweet.
 
 Benefits
@@ -13,7 +12,7 @@ Benefits
 - Intuitive syntax and included types.
 
 Drawbacks
-- Only the latest 20 Tweets are returned.
+- When getting a Timeline, only the latest 20 Tweets are returned.
 - This endpoint could be deprecated at any point and is subject to issues.
 
 ### Install

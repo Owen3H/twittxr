@@ -6,11 +6,11 @@
   "main": "dist/index.js",
   "types": "dist/types.js",
   "scripts": {
-    "test": "node src/test.js",
+    "test": "node test.js",
     "clean": "npx rimraf dist",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs",
-    "build:esm": "tsc --outDir dist/esm"
+    "build:esm": "tsc --outDir dist/esm --declaration true"
   },
   "repository": {
     "type": "git",

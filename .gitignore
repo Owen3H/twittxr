@@ -49,6 +49,8 @@ web_modules/
 .pnp.*
 
 # Custom Exclusions
-src/test.js
+*/test.js
+test.js
+
 dist/
 vscode/

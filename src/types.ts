@@ -8,7 +8,7 @@ type UserMention = BaseUser & {
     indices: number[]
 }
 
-type RawUser = BaseUser & {
+type RawTimelineUser = BaseUser & {
     blocking: boolean
     created_at: string
     default_profile: boolean
@@ -39,7 +39,7 @@ type TweetEntities = {
     user_mentions?: UserMention[]
 }
 
-type RawTweet = {
+type RawTimelineTweet = {
     conversation_id_str: string
     id_str: string
     text: string
@@ -50,16 +50,16 @@ type RawTweet = {
     quote_count: number
     retweet_count: number
     favorite_count: number
-    user: RawUser
+    user: RawTimelineUser
     possibly_sensitive: boolean
     lang: string
     location: string
-    retweeted_status?: RawTweet
+    retweeted_status?: RawTimelineTweet
     entities?: TweetEntities 
 }
 
 export {
-    RawTweet,
-    RawUser,
+    RawTimelineTweet,
+    RawTimelineUser,
     TweetEntities,
 }
