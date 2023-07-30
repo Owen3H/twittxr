@@ -67,3 +67,30 @@ export type RawTimelineTweet = {
     retweeted_status?: RawTimelineTweet
     entities?: TweetEntities 
 }
+
+export type RawTweet = {
+    parent: any
+    user: RawUser
+    conversation_count: any
+    entities: TweetEntities
+    isEdited: boolean
+    text: string
+    id_str: string|number
+    created_at: string
+}
+
+export type RawUser = {
+    id_str: string;
+    is_blue_verified: boolean;
+    name: string;
+    profile_image_url_https: string;
+    screen_name: string;
+    verified: boolean;
+}
+
+export type TweetOptions = {
+    retweets: boolean
+    replies: boolean
+    cookie?: string
+    proxyUrl?: string
+}

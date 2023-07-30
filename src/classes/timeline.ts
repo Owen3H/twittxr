@@ -1,6 +1,11 @@
 import { extractTimelineData, sendReq } from "./util.js"
-import { RawTimelineTweet, RawTimelineUser, TweetEntities, UserEntities } from "../types.js"
+import { ParseError } from "./errors.js"
 import User from "./user.js"
+
+import { 
+    RawTimelineTweet, RawTimelineUser,
+    TweetOptions, UserEntities 
+} from "src/types.js"
 
 const domain = 'https://twitter.com'
 
@@ -12,7 +17,7 @@ export default class Timeline {
         const timeline = extractTimelineData(html)
     
         if (!timeline) {
-            console.error(new Error('Script tag not found or JSON data missing.'))
+            console.error(new ParseError('Script tag not found or JSON data missing.'))
             return null
         }
     
@@ -22,21 +27,24 @@ export default class Timeline {
 
     static async get(
         username, 
-        includeReplies = false, 
-        includeRetweets = false
+        options: TweetOptions = { 
+            replies: false, 
+            retweets: false,
+            proxyUrl: `https://corsproxy.io/?`
+        }
     ): Promise<TimelineTweet[]>{
-        const proxy = `https://corsproxy.io/?`
-        const endpoint = proxy + this.url + username + `?showReplies=true`
-
+        const endpoint = options.proxyUrl + this.url + username + `?showReplies=true`
         const timeline = await this.#fetchUserTimeline(endpoint)
+
+        // TODO: Properly handle error
         if (!timeline) return
 
         return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => {
             const isRetweet = tweet.isRetweet ?? false
             const isReply = tweet.isReply ?? false
           
-            return (includeRetweets === isRetweet) &&
-                   (includeReplies === isReply)  
+            return (options.retweets === isRetweet) &&
+                   (options.replies === isReply)  
         });
     }
 

@@ -1,3 +1,5 @@
+import { RawUser } from "src/types.js"
+
 export default class User {
     id: string;
     isBlueVerified: boolean;
@@ -6,7 +8,7 @@ export default class User {
     screenName: string;
     verified: boolean;
 
-    constructor(data: any) {
+    constructor(data: RawUser) {
         this.id = data.id_str
         this.isBlueVerified = data.is_blue_verified
         this.name = data.name

@@ -1,4 +1,4 @@
-import { TweetEntities } from "src/types.js"
+import { RawTweet, TweetEntities } from "src/types.js"
 import { sendReq } from "./util.js"
 
 import User from "./user.js"
@@ -14,7 +14,7 @@ class TweetEmbed {
     user: User
     inReplyToName: string
 
-    constructor(data: any) {
+    constructor(data: RawTweet) {
         this.createdAt = data.created_at
         this.id = data.id_str
         this.text = data.text
