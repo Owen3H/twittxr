@@ -1,5 +1,5 @@
 # twittxr
-A simple library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).
+A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).
 
 ## About
 The Syndication API is what is used by embedded widgets, but has some significant limitations for trading ease-of-use. **Twittxr** is best suited for setting up a user feed or getting a single tweet.
