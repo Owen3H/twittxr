@@ -6,11 +6,12 @@
   "main": "dist/esm/index.js",
   "types": "dist/esm/types.js",
   "scripts": {
-    "test": "npm run build && node test.js",
+    "test": "pnpm run build && node src/test.js",
     "clean": "npx rimraf dist",
     "build": "npm run clean && npm run build:esm",
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs",
-    "build:esm": "tsc --outDir dist/esm --declaration true"
+    "build:esm": "tsc --outDir dist/esm --declaration true",
+    "rollup": "npx rollup -c"
   },
   "repository": {
     "type": "git",
@@ -32,12 +33,16 @@
   },
   "homepage": "https://github.com/Owen3H/twittxr#readme",
   "dependencies": {
-    "tslib": "^2.6.1",
-    "undici": "^5.22.1"
+    "tslib": "latest",
+    "undici-shim": "^1.5.1"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
     "rimraf": "^5.0.1",
+    "rollup-plugin-esbuild": "^5.0.0",
     "typescript": "^5.1.6"
   },
   "files": [

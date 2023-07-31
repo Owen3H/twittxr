@@ -1,4 +1,4 @@
-import { request } from 'undici'
+import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
 /**

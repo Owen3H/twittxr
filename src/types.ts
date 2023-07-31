@@ -42,10 +42,10 @@ export type UserEntities = {
 }
 
 export type TweetEntities = {
-    hashtags?: any[]
-    media?: any[]
-    symbols: any[]
-    urls: any[]
+    hashtags?: unknown[]
+    media?: unknown[]
+    symbols: unknown[]
+    urls: unknown[]
     user_mentions?: UserMention[]
 }
 
@@ -69,9 +69,9 @@ export type RawTimelineTweet = {
 }
 
 export type RawTweet = {
-    parent: any
+    parent: RawTweet
     user: RawUser
-    conversation_count: any
+    conversation_count: number
     entities: TweetEntities
     isEdited: boolean
     text: string
