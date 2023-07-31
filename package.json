@@ -1,6 +1,6 @@
 {
   "name": "twittxr",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Extract information from Twitter via the Syndication API without authentication.",
   "type": "module",
   "main": "dist/esm/index.js",
@@ -40,5 +40,10 @@
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6"
   },
-  "files": ["dist", "LICENSE", "README.md", "package.json"]
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ]
 }
