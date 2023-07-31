@@ -1,19 +1,21 @@
 # twittxr
-A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).
+A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).<br>
+Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 
 ## About
-The Syndication API is what is used by embedded widgets, but has some significant limitations for trading ease-of-use. **Twittxr** is best suited for setting up a user feed or getting a single tweet.
+The Syndication API is what is used by embedded widgets and its ease-of-use brings some notable limitations.<br>
+**Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
-Benefits
-- Completely auth-free. (With optional session cookie for NSFW content)
-- Requests are proxied through [corsproxy.io](https://corsproxy.io).
+#### ✅  Benefits
+- Completely auth-free. (No login or tokens)
+- Option to include retweets and/or replies.
+- Requests are proxied via `corsproxy.io`. Can be overridden with [custom tweet options](#custom-tweet-options).
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
-- Filter out retweets/replies.
 - Intuitive syntax and included types.
 
-Drawbacks
+#### ❌ Drawbacks
 - When getting a Timeline, only the latest 20 Tweets are returned.
-- This endpoint could be deprecated at any point and is subject to issues.
+- NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install
 ```bash
@@ -21,7 +23,7 @@ npm i twittxr
 ```
 
 ## Usage
-> No CJS support yet, use dynamic import for now.
+> A UMD (browser/cjs) build is planned. For now, use [dynamic import](https://byby.dev/js-dynamic-imports).
 
 ### ESM
 #### Regular usage
