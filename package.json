@@ -3,12 +3,12 @@
   "version": "0.2.0",
   "description": "Extract information from Twitter via the Syndication API without authentication.",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/types.js",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/types.js",
   "scripts": {
-    "test": "npm run build:esm && node test.js",
+    "test": "npm run build && node test.js",
     "clean": "npx rimraf dist",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build": "npm run clean && npm run build:esm",
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs",
     "build:esm": "tsc --outDir dist/esm --declaration true"
   },
