@@ -23,11 +23,12 @@ npm i twittxr
 ```
 
 ## Usage
-> A UMD (browser/cjs) build is planned. For now, use [dynamic import](https://byby.dev/js-dynamic-imports).
+> **Note**
+> Browser support is untested, but *should* work from v0.4.1
 
 ### ESM
 #### Regular usage
-```js
+```ts
 import { Timeline, Tweet } from 'twittxr'
 
 // Replies and retweets filtered out by default.
@@ -49,4 +50,19 @@ const custom = await Timeline.get('elonmusk', {
 })
 
 console.log(custom)
+```
+
+### CJS
+```js
+const { Timeline, Tweet } = require('twittxr')
+
+async function test() {
+    const selfTweets = await Timeline.get('elonmusk')
+    console.log(selfTweets)
+    
+    const tweet = await Tweet.get('1674865731136020505')
+    console.log(tweet) 
+}
+
+test()
 ```
