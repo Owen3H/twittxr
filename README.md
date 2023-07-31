@@ -15,18 +15,36 @@ Drawbacks
 - When getting a Timeline, only the latest 20 Tweets are returned.
 - This endpoint could be deprecated at any point and is subject to issues.
 
-### Install
+## Install
 ```bash
 npm i twittxr
 ```
 
-### Usage
+## Usage
 > No CJS support yet, use dynamic import for now.
 
 ### ESM
+#### Regular usage
 ```js
-import { Timeline } from 'twittxr'
+import { Timeline, Tweet } from 'twittxr'
 
-const tweets = await Timeline.get('elonmusk', false, false)
-console.log(tweets)
+// Replies and retweets filtered out by default.
+const selfTweets = await Timeline.get('elonmusk')
+console.log(selfTweets)
+
+// Get a single tweet by its ID. (Not the same result as Timeline)
+const tweet = await Tweet.get('1674865731136020505')
+console.log(tweet)
+```
+
+#### Custom tweet options
+```js
+const custom = await Timeline.get('elonmusk', {
+    replies: true,
+    retweets: false,
+    proxyUrl: 'https://example-proxy.com' // Optional, will override corsproxy.io
+    cookie: 'yourCookieString' // Coming soon.
+})
+
+console.log(custom)
 ```
