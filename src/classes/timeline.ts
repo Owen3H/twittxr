@@ -26,7 +26,7 @@ export default class Timeline {
     }
 
     static async get(
-        username, 
+        username: string, 
         options: TweetOptions = { 
             replies: false, 
             retweets: false,
@@ -42,11 +42,11 @@ export default class Timeline {
         return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => 
             (options.retweets === tweet.isRetweet ?? false) &&
             (options.replies === tweet.isReply ?? false)
-        );
+        )
     }
 
-    static at = (username, index) => this.get(username).then(arr => arr[index])
-    static latest = (username) => this.at(username, 0)
+    static at = (username: string, index: number) => this.get(username).then(arr => arr[index])
+    static latest = (username: string) => this.at(username, 0)
 }
 
 class TimelineTweet {

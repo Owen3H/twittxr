@@ -4,7 +4,7 @@ import { sendReq } from "./util.js"
 import User from "./user.js"
 
 class TweetEmbed {
-    conversationCount: number
+    conversationCount?: number
     createdAt: string
     id: string | number
     text: string
@@ -12,7 +12,7 @@ class TweetEmbed {
     entities: TweetEntities
     parent?: TweetEmbed
     user: User
-    inReplyToName: string
+    inReplyToName?: string
 
     constructor(data: RawTweet) {
         this.createdAt = data.created_at
