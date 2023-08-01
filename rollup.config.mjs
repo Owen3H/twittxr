@@ -1,10 +1,11 @@
+import resolve from '@rollup/plugin-node-resolve'
+
 import esbuild from 'rollup-plugin-esbuild'
 import dts from 'rollup-plugin-dts'
 
 const common = {
 	input: 'src/index.ts',
-	external: ['undici-shim', 'tslib'],
-    plugins: [esbuild()],
+	external: ['undici-shim', 'tslib']
 }
 
 const generatedCode = {
@@ -15,6 +16,7 @@ const generatedCode = {
 
 const esm = {
 	...common,
+    plugins: [esbuild(), resolve()],
     output: {
         generatedCode,
         file: 'dist/esm.js',
@@ -24,6 +26,7 @@ const esm = {
 
 const umd = {
 	...common,
+    plugins: [esbuild(), resolve({ browser: true })],
     output: {
         generatedCode,
         name: 'twittxr',
@@ -31,7 +34,8 @@ const umd = {
             'undici-shim': 'undici'
         },
         file: 'dist/umd.cjs',
-        format: 'umd'
+        format: 'umd',
+        exports: "named"
     }
 }
 
