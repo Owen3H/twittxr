@@ -1,4 +1,6 @@
-# twittxr
+<img align="right" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="150px"/>
+
+# Twittxr
 A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).<br>
 Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 
@@ -9,7 +11,7 @@ The Syndication API is what is used by embedded widgets and its ease-of-use brin
 #### ✅  Benefits
 - Completely auth-free. (No login or tokens)
 - Option to include retweets and/or replies.
-- Requests are proxied via `corsproxy.io`. Can be overridden with [custom tweet options](#custom-tweet-options).
+- Requests are proxied via `corsproxy.io`. Can be overridden with [custom tweet options](#get-user-timeline).
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
 - Intuitive syntax and included types.
 
@@ -17,30 +19,37 @@ The Syndication API is what is used by embedded widgets and its ease-of-use brin
 - When getting a Timeline, only the latest 20 Tweets are returned.
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
-## Install
+## Install & Import
 ```bash
 npm i twittxr
 ```
 
-## Usage
-> **Note**
-> Browser support is untested, but *should* work from v0.4.1
-
 ### ESM
-#### Regular usage
-```ts
+```js
 import { Timeline, Tweet } from 'twittxr'
-
-// Replies and retweets filtered out by default.
-const selfTweets = await Timeline.get('elonmusk')
-console.log(selfTweets)
-
-// Get a single tweet by its ID. (Not the same result as Timeline)
-const tweet = await Tweet.get('1674865731136020505')
-console.log(tweet)
+```
+### CJS
+```js
+const { Timeline, Tweet } = require('twittxr')
 ```
 
-#### Custom tweet options
+> **Note**
+> Browser support is untested, but *should* work from v0.4.2
+
+## Usage
+### Get tweet by ID
+```js
+// Does not return the same type as Timeline.get()
+const tweet = await Tweet.get('1674865731136020505')
+```
+
+### Get user timeline
+```js
+// Replies and retweets filtered out by default.
+const tweets = await Timeline.get('elonmusk')
+```
+
+### Get user timeline (with options)
 ```js
 const custom = await Timeline.get('elonmusk', {
     replies: true,
@@ -48,21 +57,4 @@ const custom = await Timeline.get('elonmusk', {
     proxyUrl: 'https://example-proxy.com' // Optional, will override corsproxy.io
     cookie: 'yourCookieString' // Coming soon.
 })
-
-console.log(custom)
-```
-
-### CJS
-```js
-const { Timeline, Tweet } = require('twittxr')
-
-async function test() {
-    const selfTweets = await Timeline.get('elonmusk')
-    console.log(selfTweets)
-    
-    const tweet = await Tweet.get('1674865731136020505')
-    console.log(tweet) 
-}
-
-test()
 ```
