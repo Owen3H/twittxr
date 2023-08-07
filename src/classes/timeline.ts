@@ -32,17 +32,15 @@ export default class Timeline {
             retweets: false,
             proxyUrl: `https://corsproxy.io/?`
         }
-    ): Promise<TimelineTweet[]>{
-        const endpoint = options.proxyUrl + this.url + username + `?showReplies=true`
+    ): Promise<TimelineTweet[]> {
+        const endpoint = `${options.proxyUrl}${this.url}${username}?showReplies=${options.replies}`
         const timeline = await this.#fetchUserTimeline(endpoint)
 
         // TODO: Properly handle error
         if (!timeline) return
 
-        return timeline.map(e => new TimelineTweet(e.content.tweet)).filter(tweet => 
-            (options.retweets === tweet.isRetweet ?? false) &&
-            (options.replies === tweet.isReply ?? false)
-        )
+        return timeline.map(e => new TimelineTweet(e.content.tweet))
+                       .filter((tweet: TimelineTweet) => options.retweets === tweet.isRetweet ?? false)
     }
 
     static at = (username: string, index: number) => this.get(username).then(arr => arr[index])

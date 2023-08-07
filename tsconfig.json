@@ -4,6 +4,7 @@
         "target": "ES2017",
         "moduleResolution": "NodeNext",
         "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
         "importHelpers": true,
         "allowJs": true,
         "esModuleInterop": true,
@@ -11,7 +12,10 @@
         "baseUrl": ".",
         "paths": {
             "tslib" : ["node_modules/tslib/tslib.d.ts"]
-        }
+        },
+        "types": [
+            "vitest/globals"
+        ],
     },
     "include": ["src"],
     "exclude": ["node_modules", "src/test.js", "dist"]
