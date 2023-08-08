@@ -1,6 +1,10 @@
-<img align="right" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="150px"/>
+<div align="left">
+  <a href="https://twitter.com/elonmusk/status/1685096284275802112">
+    <img align="left" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="110">
+  </a>
+  <h2>Twittxr</h2>
+</div>
 
-# Twittxr
 A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).<br>
 Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 
