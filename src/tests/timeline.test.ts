@@ -54,7 +54,7 @@ describe('Timeline get', () => {
         assertType<Timeline[]>(timeline)
     })
 
-    test('includes NSFW tweet(s) using a cookie', async () => {
+    test('includes nsfw/sensitive tweet(s) using a cookie', async () => {
         const cookie = process.env.COOKIE_STRING
         expect(cookie).toBeDefined()
 
@@ -64,7 +64,7 @@ describe('Timeline get', () => {
         assertType<Timeline[]>(timeline)
         expect(timeline.length).toBeGreaterThan(0)
 
-        const foundNSFW = timeline.find(twt => twt.sensitive)
-        expect(foundNSFW).toBeDefined()
+        const hasSensitive = timeline.some(twt => twt.sensitive)
+        expect(hasSensitive).toBe(true)
     })
 })
