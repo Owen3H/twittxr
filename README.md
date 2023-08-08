@@ -11,7 +11,8 @@ The Syndication API is what is used by embedded widgets and its ease-of-use brin
 #### ✅  Benefits
 - Completely auth-free. (No login or tokens)
 - Option to include retweets and/or replies.
-- Requests are proxied via `corsproxy.io`. Can be overridden with [custom tweet options](#get-user-timeline).
+- Option to pass a cookie string, **required for NSFW tweets to be included**.
+- Requests proxied through `corsproxy.io`. Can be overridden via [custom tweet options](#get-user-timeline).
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
 - Intuitive syntax and included types.
 
@@ -34,7 +35,7 @@ const { Timeline, Tweet } = require('twittxr')
 ```
 
 > **Note**
-> Browser support is untested, but *should* work from v0.4.2
+> Browser support is untested, but a UMD build is provided in v0.5.1
 
 ## Usage
 ### Get tweet by ID
@@ -55,6 +56,6 @@ const custom = await Timeline.get('elonmusk', {
     replies: true,
     retweets: false,
     proxyUrl: 'https://example-proxy.com' // Optional, will override corsproxy.io
-    cookie: 'yourCookieString' // Coming soon.
+    cookie: 'yourCookieString' // Necessary for sensitive tweets to be included.
 })
 ```
