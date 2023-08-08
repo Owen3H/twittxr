@@ -1,12 +1,12 @@
 import { RawUser } from "src/types.js"
 
 export default class User {
-    id: string;
-    isBlueVerified: boolean;
-    name: string;
-    profileImageUrl: string;
-    screenName: string;
-    verified: boolean;
+    readonly id: string
+    readonly isBlueVerified: boolean
+    readonly name: string
+    readonly profileImageUrl: string
+    readonly screenName: string
+    readonly verified: boolean
 
     constructor(data: RawUser) {
         this.id = data.id_str

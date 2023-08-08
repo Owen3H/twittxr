@@ -83,17 +83,17 @@ export type RawTweet = {
     entities: TweetEntities
     isEdited: boolean
     text: string
-    id_str: string|number
+    id_str: string
     created_at: string
 }
 
 export type RawUser = {
-    id_str: string;
-    is_blue_verified: boolean;
-    name: string;
-    profile_image_url_https: string;
-    screen_name: string;
-    verified: boolean;
+    id_str: string
+    is_blue_verified: boolean
+    name: string
+    profile_image_url_https: string
+    screen_name: string
+    verified: boolean
 }
 
 export type TweetOptions = {

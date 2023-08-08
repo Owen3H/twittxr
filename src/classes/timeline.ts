@@ -57,18 +57,18 @@ export default class Timeline {
 }
 
 class TimelineTweet {
-    id: number | string
-    text: string
-    createdAt: string
-    inReplyToName: string
-    link: string
-    replyCount: number
-    quoteCount: number
-    retweetCount: number
-    likeCount: number
+    readonly id: string
+    readonly text: string
+    readonly createdAt: string
+    readonly inReplyToName: string
+    readonly link: string
+    readonly replyCount: number
+    readonly quoteCount: number
+    readonly retweetCount: number
+    readonly likeCount: number
 
-    user: TimelineUser
-    sensitive?: boolean
+    readonly user: TimelineUser
+    readonly sensitive?: boolean
     
     constructor(data: RawTimelineTweet) {
         this.id = data.id_str

@@ -4,15 +4,15 @@ import { sendReq } from "./util.js"
 import User from "./user.js"
 
 class TweetEmbed {
-    conversationCount?: number
-    createdAt: string
-    id: string | number
-    text: string
-    isEdited: boolean
-    entities: TweetEntities
-    parent?: TweetEmbed
-    user: User
-    inReplyToName?: string
+    readonly conversationCount?: number
+    readonly createdAt: string
+    readonly id: string
+    readonly text: string
+    readonly isEdited: boolean
+    readonly entities: TweetEntities
+    readonly parent?: TweetEmbed
+    readonly user: User
+    readonly inReplyToName?: string
 
     constructor(data: RawTweet) {
         this.createdAt = data.created_at
