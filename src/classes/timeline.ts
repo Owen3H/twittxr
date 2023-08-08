@@ -3,6 +3,7 @@ import { ParseError } from "./errors.js"
 import User from "./user.js"
 
 import { 
+    RawTimelineEntry,
     RawTimelineTweet, RawTimelineUser,
     TweetOptions, UserEntities 
 } from "src/types.js"
@@ -12,8 +13,8 @@ const domain = 'https://twitter.com'
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
 
-    static async #fetchUserTimeline(url: string) {
-        const html = await sendReq(url).then(body => body.text())
+    static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
+        const html = await sendReq(url, cookie).then(body => body.text())
         const timeline = extractTimelineData(html)
     
         if (!timeline) {
@@ -27,20 +28,28 @@ export default class Timeline {
 
     static async get(
         username: string, 
-        options: TweetOptions = { 
-            replies: false, 
-            retweets: false,
-            proxyUrl: `https://corsproxy.io/?`
+        options: Partial<TweetOptions> = {
+            proxyUrl: null,
+            cookie: null
         }
-    ): Promise<TimelineTweet[]> {
-        const endpoint = `${options.proxyUrl}${this.url}${username}?showReplies=${options.replies}`
-        const timeline = await this.#fetchUserTimeline(endpoint)
+    ) {
+        // Ensure its a string to form a valid endpoint.
+        const proxy = options.proxyUrl ?? `https://corsproxy.io/?`
+
+        const includeReplies = options.replies ?? false
+        const includeRts = options.retweets ?? false
+
+        const endpoint = `${proxy}${this.url}${username}?showReplies=${includeReplies}`
+        const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
 
         // TODO: Properly handle error
         if (!timeline) return
 
-        return timeline.map(e => new TimelineTweet(e.content.tweet))
-                       .filter((tweet: TimelineTweet) => options.retweets === tweet.isRetweet ?? false)
+        const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
+        return tweets.filter(twt =>
+            twt.isRetweet === includeReplies && 
+            twt.isReply === includeRts
+        )
     }
 
     static at = (username: string, index: number) => this.get(username).then(arr => arr[index])
@@ -59,7 +68,8 @@ class TimelineTweet {
     likeCount: number
 
     user: TimelineUser
-
+    sensitive?: boolean
+    
     constructor(data: RawTimelineTweet) {
         this.id = data.id_str
         this.text = data.text
@@ -69,15 +79,16 @@ class TimelineTweet {
         this.replyCount = data.reply_count
         this.retweetCount = data.retweet_count
         this.likeCount = data.favorite_count
-        
+        this.sensitive = data.possibly_sensitive ?? false
+
         if (data.user) this.user = new TimelineUser(data.user)
         if (data.in_reply_to_name)
             this.inReplyToName = data.in_reply_to_name
     }
- 
+
     get isRetweet() {
         return this.text.startsWith('RT @')
-    } 
+    }
 
     get isReply() { 
         return !!this.inReplyToName

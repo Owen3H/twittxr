@@ -1,15 +1,24 @@
 import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
+const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
+
+const headers = (cookie?: string) => {
+    const obj = {
+        'User-Agent': mockAgent
+    }
+
+    if (cookie) obj['Cookie'] = cookie
+    return { headers: obj }
+}
+
 /**
  * Sends a request to the API with a mock user agent, returning either the
  * response body or an {@link HttpError} including the status code.
  * @internal
  */
-async function sendReq(url: string) {
-    const res = await request(url, { headers: { 
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
-    }})
+async function sendReq(url: string, cookie?: string) {
+    const res = await request(url, headers(cookie))
 
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
     if (res.statusCode !== 200 && res.statusCode !== 304)

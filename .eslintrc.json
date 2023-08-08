@@ -16,6 +16,9 @@
         "no-unused-vars": "warn",
         "no-undef": "warn",
         "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/ban-ts-comment": "off"
+        "@typescript-eslint/ban-ts-comment": "off",
+        "semi": ["error", "never"],
+        "no-unreachable": ["error"],
+        "no-unexpected-multiline": ["error"]
     }
 }

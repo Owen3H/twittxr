@@ -1,8 +1,12 @@
 /* eslint-disable no-undef */
 import { Tweet } from '../classes/tweet.js'
 
-test.skip('single tweet is of correct type', () => {
+test('Tweet is setup correctly', () => {
+    expect(Tweet).toHaveProperty('get')
+    expectTypeOf(Tweet.get).toBeFunction()
 
+    expectTypeOf(Tweet.get).toBeCallableWith('1688091377823895552')
+    expectTypeOf(Tweet.get).toBeCallableWith(1688091377823895552)
 })
 
 test('single tweet can be retrieved successfully', async () => {
@@ -12,3 +16,8 @@ test('single tweet can be retrieved successfully', async () => {
     expect(tweet.user).toBeDefined()
 })
 
+describe('Tweet get', () => {
+    it.skip('', () => {
+
+    })
+})

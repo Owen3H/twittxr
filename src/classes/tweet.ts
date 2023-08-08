@@ -31,9 +31,13 @@ class TweetEmbed {
         if (parent) this.parent = new TweetEmbed(parent)
     }
 
-    isRetweet = () => this.text.startsWith('RT @')
+    get isRetweet() {
+        return this.text.startsWith('RT @')
+    }
 
-    isReply = () => !!this.inReplyToName
+    get isReply() { 
+        return !!this.inReplyToName
+    }
 }
 
 export default class Tweet {

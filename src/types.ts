@@ -49,6 +49,14 @@ export type TweetEntities = {
     user_mentions?: UserMention[]
 }
 
+export type RawTimelineEntry = {
+    type: string
+    entry_id: string
+    content: {
+        tweet: RawTimelineTweet
+    }
+}
+
 export type RawTimelineTweet = {
     conversation_id_str: string
     id_str: string
@@ -61,7 +69,7 @@ export type RawTimelineTweet = {
     retweet_count: number
     favorite_count: number
     user: RawTimelineUser
-    possibly_sensitive: boolean
+    possibly_sensitive?: boolean
     lang: string
     location: string
     retweeted_status?: RawTimelineTweet
@@ -89,8 +97,8 @@ export type RawUser = {
 }
 
 export type TweetOptions = {
-    retweets: boolean
-    replies: boolean
+    retweets: boolean | null | undefined
+    replies: boolean | null | undefined
     cookie?: string
     proxyUrl?: string
 }

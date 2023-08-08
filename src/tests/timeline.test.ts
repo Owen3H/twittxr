@@ -12,25 +12,59 @@ test('timeline is setup correctly', () => {
 })
 
 test.skip('timeline can be retrieved successfully', async () => {
-    const timeline = await Timeline.get('elonmusk')
-    expect(timeline).toBeDefined()
 
-    // Expect correct type
+    // Expect not to be an error.
     // Expect structure is valid.
 
 })
 
-test('timeline can retrieve maximum tweets', async () => {
-    const timeline = await Timeline.get('elonmusk', {
-        replies: false,
-        retweets: false,
-        proxyUrl: ''
+describe('Timeline get', () => {
+    test('can retrieve maximum tweets', async () => {
+        const timeline = await Timeline.get('elonmusk', {
+            replies: false,
+            retweets: false
+        })
+    
+        expectTypeOf(timeline).toBeArray()
+        expect(timeline.length).toBeGreaterThanOrEqual(20)
     })
 
-    expectTypeOf(timeline).toBeArray()
-    expect(timeline.length).toBeGreaterThanOrEqual(20)
-})
+    test('correctly gets matching tweets according to options', async () => {
+        const options = {
+            replies: false,
+            retweets: false
+        }
 
-test.skip('timeline can use cookie to include NSFW tweets', () => {
+        const timeline = await Timeline.get('elonmusk', options)
+        expect(timeline).toBeDefined()
+
+        let count = timeline.length
+        timeline.forEach(twt => {
+            if (twt.isRetweet || twt.isReply)
+                count--
+        })
+
+        expect.soft(count).toEqual(timeline.length)
+    })
     
+    test('can return valid response using a proxy', async () => {
+        const timeline = await Timeline.get('elonmusk')
+
+        expect(timeline).toBeDefined()
+        assertType<Timeline[]>(timeline)
+    })
+
+    test('includes NSFW tweet(s) using a cookie', async () => {
+        const cookie = process.env.COOKIE_STRING
+        expect(cookie).toBeDefined()
+
+        const timeline = await Timeline.get('pinkchyunsfw', { cookie })
+
+        expect(timeline).toBeDefined()
+        assertType<Timeline[]>(timeline)
+        expect(timeline.length).toBeGreaterThan(0)
+
+        const foundNSFW = timeline.find(twt => twt.sensitive)
+        expect(foundNSFW).toBeDefined()
+    })
 })
