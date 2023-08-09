@@ -39,7 +39,7 @@ const { Timeline, Tweet } = require('twittxr')
 ```
 
 ### Browser
-> A UMD build is provided in 0.5.1, but is untested.
+> A UMD build is provided in v0.5.1, but is untested.
 
 ## Usage
 ### Get tweet by ID
