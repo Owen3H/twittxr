@@ -54,7 +54,6 @@ test.js
 
 dist/
 .vscode/
-.github/
 
 pnpm-lock.yaml
 package-lock.json

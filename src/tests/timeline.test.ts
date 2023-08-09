@@ -54,17 +54,19 @@ describe('Timeline get', () => {
         assertType<Timeline[]>(timeline)
     })
 
-    test('includes nsfw/sensitive tweet(s) using a cookie', async () => {
-        const cookie = process.env.COOKIE_STRING
-        expect(cookie).toBeDefined()
-
-        const timeline = await Timeline.get('pinkchyunsfw', { cookie })
-
-        expect(timeline).toBeDefined()
-        assertType<Timeline[]>(timeline)
-        expect(timeline.length).toBeGreaterThan(0)
-
-        const hasSensitive = timeline.some(twt => twt.sensitive)
-        expect(hasSensitive).toBe(true)
-    })
+    if (!process.env.GITHUB_ACTIONS) {
+        test('includes nsfw/sensitive tweet(s) using a cookie', async () => {
+            const cookie = process.env.COOKIE_STRING
+            expect(cookie).toBeDefined()
+    
+            const timeline = await Timeline.get('pinkchyunsfw', { cookie })
+    
+            expect(timeline).toBeDefined()
+            assertType<Timeline[]>(timeline)
+            expect(timeline.length).toBeGreaterThan(0)
+    
+            const hasSensitive = timeline.some(twt => twt.sensitive)
+            expect(hasSensitive).toBe(true)
+        })
+    }
 })

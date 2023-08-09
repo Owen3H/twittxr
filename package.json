@@ -11,8 +11,8 @@
     "test-file": "pnpm run build && node src/test.js",
     "clean": "npx rimraf dist",
     "build": "pnpm run clean && npx rollup -c",
-    "tsc-build:cjs": "tsc --module CommonJS --outDir dist/cjs",
-    "tsc-build:esm": "tsc --outDir dist/esm --declaration true"
+    "lint": "eslint .",
+    "ci": "pnpm run lint && pnpm run test && pnpm run build"
   },
   "repository": {
     "type": "git",
