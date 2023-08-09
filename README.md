@@ -21,7 +21,7 @@ The Syndication API is what is used by embedded widgets and its ease-of-use brin
 - Intuitive syntax and included types.
 
 #### ❌ Drawbacks
-- When getting a Timeline, only the latest 20 Tweets are returned.
+- When getting a Timeline, only up to `100` Tweets can be returned.
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install & Import
@@ -38,8 +38,8 @@ import { Timeline, Tweet } from 'twittxr'
 const { Timeline, Tweet } = require('twittxr')
 ```
 
-> **Note**
-> Browser support is untested, but a UMD build is provided in v0.5.1
+### Browser
+> A UMD build is provided in 0.5.1, but is untested.
 
 ## Usage
 ### Get tweet by ID
@@ -59,7 +59,7 @@ const tweets = await Timeline.get('elonmusk')
 const custom = await Timeline.get('elonmusk', {
     replies: true,
     retweets: false,
-    proxyUrl: 'https://example-proxy.com' // Optional, will override corsproxy.io
+    proxyUrl: 'https://example-proxy.com', // Optional, will override corsproxy.io
     cookie: 'yourCookieString' // Necessary for sensitive tweets to be included.
 })
 ```
