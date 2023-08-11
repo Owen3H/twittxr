@@ -1,7 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve'
 
 import esbuild from 'rollup-plugin-esbuild'
-import dts from 'rollup-plugin-dts'
+//import dts from 'rollup-plugin-dts'
 
 const common = {
 	input: 'src/index.ts',
@@ -39,13 +39,13 @@ const umd = {
     }
 }
 
-const types = {
-	input: 'src/types.ts',
-    plugins: [dts()],
-    output: {
-      file: `dist/types.d.ts`,
-      format: 'es',
-    }
-}
+// const types = {
+// 	input: 'src/types.ts',
+//     plugins: [dts()],
+//     output: {
+//       file: `dist/types.d.ts`,
+//       format: 'es',
+//     }
+// }
 
-export default [umd, esm, types]
+export default [umd, esm]

@@ -1,4 +1,4 @@
-import { RawTweet, TweetEntities } from "src/types.js"
+import { RawTweet, TweetEntities } from "../types.js"
 import { sendReq } from "./util.js"
 
 import User from "./user.js"

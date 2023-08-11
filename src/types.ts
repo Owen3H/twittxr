@@ -32,13 +32,15 @@ export type RawTimelineUser = BaseUser & {
     entities: UserEntities
 }
 
+type DynamicProps<T> = {
+    [key: string]: T
+}
+
+export type UrlEntity = { urls: DynamicProps<string> }
+
 export type UserEntities = {
-    description: {
-        urls: { [key: string]: string }
-    }
-    url: {
-        urls: { [key: string]: string }
-    }
+    description: UrlEntity
+    url: UrlEntity
 }
 
 export type TweetEntities = {
@@ -97,8 +99,8 @@ export type RawUser = {
 }
 
 export type TweetOptions = {
-    retweets: boolean | null | undefined
-    replies: boolean | null | undefined
+    retweets: boolean
+    replies: boolean
     cookie?: string
     proxyUrl?: string
 }

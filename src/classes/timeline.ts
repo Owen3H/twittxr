@@ -6,7 +6,7 @@ import {
     RawTimelineEntry,
     RawTimelineTweet, RawTimelineUser,
     TweetOptions, UserEntities 
-} from "src/types.js"
+} from "../types.js"
 
 const domain = 'https://twitter.com'
 
@@ -26,6 +26,17 @@ export default class Timeline {
         return data?.props?.pageProps?.timeline?.entries
     }
 
+    /**
+     * 
+     * @param username The user handle without the ``@``. 
+     * 
+     * Example:
+     * 
+     * ```js
+     * "elonmusk"
+     * ```
+     * @param options The options to use with the request, see {@link TweetOptions}.
+     */
     static async get(
         username: string, 
         options: Partial<TweetOptions> = {
@@ -36,8 +47,8 @@ export default class Timeline {
         // Ensure its a string to form a valid endpoint.
         const proxy = options.proxyUrl ?? `https://corsproxy.io/?`
 
-        const includeReplies = options.replies ?? false
-        const includeRts = options.retweets ?? false
+        const includeReplies = options.replies || false
+        const includeRts = options.retweets || false
 
         const endpoint = `${proxy}${this.url}${username}?showReplies=${includeReplies}`
         const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
@@ -47,8 +58,8 @@ export default class Timeline {
 
         const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
         return tweets.filter(twt =>
-            twt.isRetweet === includeReplies && 
-            twt.isReply === includeRts
+            twt.isRetweet === includeRts && 
+            twt.isReply === includeReplies
         )
     }
 

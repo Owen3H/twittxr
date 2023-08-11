@@ -1,4 +1,4 @@
-import { RawUser } from "src/types.js"
+import { RawUser } from "../types.js"
 
 export default class User {
     readonly id: string
