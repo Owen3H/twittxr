@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Timeline, TimelineTweet } from '../classes/timeline.js'
+import { Timeline } from '../classes/timeline.js'
 
 test('timeline is setup correctly', () => {
     expect(Timeline).toHaveProperty('get')
@@ -11,12 +11,22 @@ test('timeline is setup correctly', () => {
     expectTypeOf(Timeline.latest).toBeFunction()
 })
 
-describe('Timeline get', () => {
-    test.skip('timeline can be retrieved successfully', async () => {
+test.skip('timeline can be retrieved successfully', async () => {
 
-        // Expect not to be an error.
-        // Expect structure is valid.
+    // Expect not to be an error.
+    // Expect structure is valid.
+
+})
+
+describe('Timeline get', () => {
+    test('can retrieve maximum tweets', async () => {
+        const timeline = await Timeline.get('elonmusk', {
+            replies: false,
+            retweets: false
+        })
     
+        expectTypeOf(timeline).toBeArray()
+        expect(timeline.length).toBeGreaterThanOrEqual(20)
     })
 
     test('correctly gets matching tweets according to options', async () => {
@@ -41,22 +51,22 @@ describe('Timeline get', () => {
         const timeline = await Timeline.get('elonmusk')
 
         expect(timeline).toBeDefined()
-        assertType<TimelineTweet[]>(timeline)
+        assertType<Timeline[]>(timeline)
     })
 
     if (!process.env.GITHUB_ACTIONS) {
-        const cookie = process.env.COOKIE_STRING
-        expect(cookie).toBeDefined()
-
-        test('includes nsfw/sensitive tweet(s)', async () => {
-            const timeline = await Timeline.get('rileyreidx3', { cookie, proxyUrl: '' })
+        test('includes nsfw/sensitive tweet(s) using a cookie', async () => {
+            const cookie = process.env.COOKIE_STRING
+            expect(cookie).toBeDefined()
+    
+            const timeline = await Timeline.get('pinkchyunsfw', { cookie })
     
             expect(timeline).toBeDefined()
-            assertType<TimelineTweet[]>(timeline)
+            assertType<Timeline[]>(timeline)
             expect(timeline.length).toBeGreaterThan(0)
     
             const hasSensitive = timeline.some(twt => twt.sensitive)
             expect(hasSensitive).toBe(true)
-        }, 5000)
+        })
     }
 })

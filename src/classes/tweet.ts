@@ -45,7 +45,7 @@ export default class Tweet {
 
     static async #fetchTweet(url: string) {
         const data = await sendReq(url).then(body => body.json())
-        return data as RawTweet
+        return data
     }
 
     static async get(id: string | number) {

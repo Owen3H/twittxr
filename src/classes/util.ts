@@ -1,13 +1,6 @@
 import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
-import puppeteer from 'puppeteer-extra'
-
-import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
-import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-
-puppeteer.default.use(AdblockerPlugin.default()).use(StealthPlugin())
-
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
 const headers = (cookie?: string) => {
@@ -16,7 +9,7 @@ const headers = (cookie?: string) => {
     }
 
     if (cookie) obj['Cookie'] = cookie
-    return obj
+    return { headers: obj }
 }
 
 /**
@@ -25,30 +18,13 @@ const headers = (cookie?: string) => {
  * @internal
  */
 async function sendReq(url: string, cookie?: string) {
-    const res = await request(url, { headers: headers(cookie) })
+    const res = await request(url, headers(cookie))
 
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
     if (res.statusCode !== 200 && res.statusCode !== 304)
         throw new HttpError('Server responded with an error!', res.statusCode)
 
     return res.body
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function getPuppeteerContent(browser: any, url: string, cookie?: string) {
-    const page = await browser.newPage()
-    try {
-        await page.setExtraHTTPHeaders(headers(cookie))
-        await page.goto(url, { waitUntil: 'load' })
-
-        return await page.content()
-    }
-    catch(e) {
-        console.error(e)
-    }
-    finally {
-        await page.close()
-    }
 }
 
 /**
@@ -73,7 +49,7 @@ const extractTimelineData = (html: string) => {
 }
 
 export {
-    sendReq, getPuppeteerContent,
+    sendReq,
     extractTimelineData,
     FetchError,
     HttpError
