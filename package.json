@@ -1,6 +1,6 @@
 {
   "name": "twittxr",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Extract information from Twitter via the Syndication API without authentication.",
   "type": "module",
   "main": "dist/umd.cjs",
