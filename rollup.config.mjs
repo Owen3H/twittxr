@@ -1,9 +1,17 @@
 import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+
+import pkg from './package.json' assert { type: 'json' }
 
 const common = {
 	input: 'src/index.ts',
-	external: ['undici-shim', 'tslib']
+	external: ['undici-shim', 'tslib'],
+    plugins: [esbuild(), json(), 
+        resolve({ preferBuiltins: true }), 
+        commonjs({ requireReturnsDefault: 'auto' })
+    ],
 }
 
 const generatedCode = {
@@ -14,27 +22,20 @@ const generatedCode = {
 
 const esm = {
 	...common,
-    plugins: [esbuild(), resolve()],
     output: {
         generatedCode,
-        file: 'dist/esm.js',
+        file: pkg.module,
         format: 'es'
     }
 }
 
-const umd = {
+const cjs = {
 	...common,
-    plugins: [esbuild(), resolve({ browser: true })],
     output: {
         generatedCode,
-        name: 'twittxr',
-        globals: {
-            'undici-shim': 'undici'
-        },
-        file: 'dist/umd.cjs',
-        format: 'umd',
-        exports: "named"
+        file: pkg.main,
+        format: 'cjs'
     }
 }
 
-export default [umd, esm]
+export default [esm, cjs]
