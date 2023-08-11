@@ -34,6 +34,9 @@
   },
   "homepage": "https://github.com/Owen3H/twittxr#readme",
   "dependencies": {
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-adblocker": "^2.13.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "tslib": "latest",
     "undici-shim": "^1.5.1"
   },

@@ -1,5 +1,8 @@
-import { extractTimelineData, sendReq } from "./util.js"
+import puppeteer from 'puppeteer-extra'
+
+import { extractTimelineData, getPuppeteerContent } from "./util.js"
 import { ParseError } from "./errors.js"
+
 import User from "./user.js"
 
 import { 
@@ -12,18 +15,26 @@ const domain = 'https://twitter.com'
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
+    private static browser = null
+    get browser() {
+        return this.browser
+    }
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
-        const html = await sendReq(url, cookie).then(body => body.text())
-        const timeline = extractTimelineData(html)
+        if (!this.browser) {
+            this.browser = await puppeteer.default.launch({ headless: 'new' })
+        }
+
+        const html = await getPuppeteerContent(this.browser, url, cookie)
+        const data = extractTimelineData(html)
     
-        if (!timeline) {
+        if (!data) {
             console.error(new ParseError('Script tag not found or JSON data missing.'))
             return null
         }
     
-        const data = JSON.parse(timeline)
-        return data?.props?.pageProps?.timeline?.entries
+        const timeline = JSON.parse(data)
+        return timeline?.props?.pageProps?.timeline?.entries
     }
 
     /**
@@ -44,22 +55,18 @@ export default class Timeline {
             cookie: null
         }
     ) {
-        const proxy = options.proxyUrl ?? `https://corsproxy.io/?`,
-              endpoint = `${proxy}${this.url}${username}?showReplies=true`,
-              timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
+        const showReplies = !options.replies && !!options.cookie
 
-        // TODO: Properly handle error
-        if (!timeline) return
+        const proxy = options.proxyUrl ?? ''
+        const endpoint = `${proxy}${this.url}${username}?showReplies=${showReplies}`
+
+        const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
+        if (!timeline) return // TODO: Properly handle error
 
         const includeReplies = options.replies || false,
               includeRts = options.retweets || false
 
         const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
-
-        // if (tweets.length < 1) {
-        //     // Throw error
-        // }
-
         return tweets.filter(twt =>
             (twt.isRetweet === includeRts) && 
             (twt.isReply === includeReplies)
