@@ -55,11 +55,11 @@ export default class Timeline {
 
         const includeReplies = options.replies || false
         const includeRts = options.retweets || false
-        
+
         const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
         return tweets.filter(twt =>
-            twt.isRetweet === includeRts && 
-            twt.isReply === includeReplies
+            (twt.isRetweet === includeRts) && 
+            (twt.isReply === includeReplies)
         )
     }
 
