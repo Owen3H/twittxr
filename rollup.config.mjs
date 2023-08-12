@@ -24,7 +24,7 @@ const esm = {
 	...common,
     output: {
         generatedCode,
-        file: pkg.module,
+        file: pkg.exports.import,
         format: 'es'
     }
 }
@@ -33,7 +33,7 @@ const cjs = {
 	...common,
     output: {
         generatedCode,
-        file: pkg.main,
+        file: pkg.exports.require,
         format: 'cjs'
     }
 }
