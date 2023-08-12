@@ -25,8 +25,8 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install & Import
-```bash
-pnpm i twittxr
+```sh
+pnpm add twittxr
 ```
 
 ```js
