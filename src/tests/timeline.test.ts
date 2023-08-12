@@ -1,7 +1,12 @@
 /* eslint-disable no-undef */
+import { 
+    it, describe, 
+    expect, expectTypeOf, assertType
+} from 'vitest'
+
 import { Timeline, TimelineTweet } from '../classes/timeline.js'
 
-test('timeline is setup correctly', () => {
+it('timeline is setup correctly', () => {
     expect(Timeline).toHaveProperty('get')
     expect(Timeline).toHaveProperty('at')
     expect(Timeline).toHaveProperty('latest')
@@ -12,14 +17,14 @@ test('timeline is setup correctly', () => {
 })
 
 describe('Timeline get', () => {
-    test.skip('timeline can be retrieved successfully', async () => {
+    it.skip('timeline can be retrieved successfully', async () => {
 
         // Expect not to be an error.
         // Expect structure is valid.
     
     })
 
-    test('correctly gets matching tweets according to options', async () => {
+    it('correctly gets matching tweets according to options', async () => {
         const options = {
             replies: false,
             retweets: false
@@ -37,7 +42,7 @@ describe('Timeline get', () => {
         expect.soft(count).toEqual(timeline.length)
     })
     
-    test('can return valid response using a proxy', async () => {
+    it('can return valid response using a proxy', async () => {
         const timeline = await Timeline.get('elonmusk')
 
         expect(timeline).toBeDefined()
@@ -48,7 +53,7 @@ describe('Timeline get', () => {
         const cookie = process.env.COOKIE_STRING
         expect(cookie).toBeDefined()
 
-        test('includes nsfw/sensitive tweet(s)', async () => {
+        it('includes nsfw/sensitive tweet(s)', async () => {
             const timeline = await Timeline.get('rileyreidx3', { cookie, proxyUrl: '' })
     
             expect(timeline).toBeDefined()
