@@ -44,7 +44,7 @@ export default class Timeline {
             cookie: null
         }
     ) {
-        const proxy = options.proxyUrl ?? `https://corsproxy.io/?`,
+        const proxy = options.proxyUrl ?? '',
               endpoint = `${proxy}${this.url}${username}?showReplies=true`,
               timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
 
@@ -55,11 +55,6 @@ export default class Timeline {
               includeRts = options.retweets || false
 
         const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
-
-        // if (tweets.length < 1) {
-        //     // Throw error
-        // }
-
         return tweets.filter(twt =>
             (twt.isRetweet === includeRts) && 
             (twt.isReply === includeReplies)
