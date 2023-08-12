@@ -1,7 +1,12 @@
 /* eslint-disable no-undef */
+import { 
+    it, describe, 
+    expect, expectTypeOf
+} from 'vitest'
+
 import { Tweet } from '../classes/tweet.js'
 
-test('Tweet is setup correctly', () => {
+it('Tweet is setup correctly', () => {
     expect(Tweet).toHaveProperty('get')
     expectTypeOf(Tweet.get).toBeFunction()
 
@@ -9,7 +14,7 @@ test('Tweet is setup correctly', () => {
     expectTypeOf(Tweet.get).toBeCallableWith(1688091377823895552)
 })
 
-test('single tweet can be retrieved successfully', async () => {
+it('single tweet can be retrieved successfully', async () => {
     const tweet = await Tweet.get('1674865731136020505')
 
     expect(tweet).toBeDefined()

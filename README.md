@@ -5,18 +5,18 @@
   <h2>Twittxr</h2>
 </div>
 
-A simple wrapper library around the Twitter [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk?showReplies=true).<br>
+A simple wrapper library around the Twitter Syndication API.<br>
 Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 
 ## About
-The Syndication API is what is used by embedded widgets and its ease-of-use brings some notable limitations.<br>
-**Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
+The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
+<br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
-#### ✅  Benefits
-- Completely auth-free. (No login or tokens)
+#### ✅ Benefits
+- Completely auth-free, no tokens or login required.
+- Powered by [puppeteer-extra](https://github.com/berstend/puppeteer-extra). (With `Stealth` and `AdBlocker` plugins)
 - Option to include retweets and/or replies.
 - Option to pass a cookie string, **required for NSFW tweets to be included**.
-- Requests proxied through `corsproxy.io`. Can be overridden via [custom tweet options](#get-user-timeline).
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
 - Intuitive syntax and included types.
 
@@ -25,41 +25,32 @@ The Syndication API is what is used by embedded widgets and its ease-of-use brin
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install & Import
-```bash
-npm i twittxr
+```sh
+pnpm add twittxr
 ```
 
-### ESM
 ```js
-import { Timeline, Tweet } from 'twittxr'
+import { Timeline, Tweet } from 'twittxr' // ESM
+const { Timeline, Tweet } = require('twittxr') // CommonJS
 ```
-### CJS
-```js
-const { Timeline, Tweet } = require('twittxr')
-```
-
-### Browser
-> A UMD build is provided in v0.5.1, but is untested.
 
 ## Usage
-### Get tweet by ID
+### Get a single Tweet
 ```js
 // Does not return the same type as Timeline.get()
 const tweet = await Tweet.get('1674865731136020505')
 ```
 
-### Get user timeline
+### Get a user Timeline
 ```js
 // Replies and retweets filtered out by default.
 const tweets = await Timeline.get('elonmusk')
-```
 
-### Get user timeline (with options)
-```js
-const custom = await Timeline.get('elonmusk', {
+// You can pass certain options to override the default behaviour.
+const tweets = await Timeline.get('elonmusk', {
     replies: true,
     retweets: false,
-    proxyUrl: 'https://example-proxy.com', // Optional, will override corsproxy.io
+    proxyUrl: 'https://corsproxy.io?', // Example proxy
     cookie: 'yourCookieString' // Necessary for sensitive tweets to be included.
 })
 ```
