@@ -4,8 +4,9 @@
   "description": "Extract information from Twitter via the Syndication API without authentication.",
   "type": "module",
   "exports": {
-    "import": "./dist/index.cjs",
-    "require": "./dist/index.js"
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.cjs"
   },
   "types": "./dist/index.d.ts",
   "scripts": {
