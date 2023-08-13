@@ -4,7 +4,7 @@ import { resolve } from 'path'
 export default defineConfig({
   test: {
     setupFiles: ['dotenv/config'],
-    slowTestThreshold: 60,
+    slowTestThreshold: 20,
     globals: true,
     bail: 5,
   },
