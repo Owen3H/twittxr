@@ -144,12 +144,14 @@ class TimelineUser extends User {
     constructor(data: RawTimelineUser) {
         super(data)
 
-        this.blocking = data.blocking
+        this.url = data.url
         this.createdAt = data.created_at
         this.defaultProfile = data.default_profile
         this.defaultProfileImage = data.default_profile_image
         this.entities = data.entities
-
+        
+        this.blocking = data.blocking
+        this.protected = data.protected
         this.notifications = data.notifications
         this.following = data.following
         this.followedBy = data.followed_by
@@ -164,9 +166,6 @@ class TimelineUser extends User {
         this.listedCount = data.listed_count
 
         this.location = data.location
-        this.url = data.url
-        this.protected = data.protected
-
         this.time_zone = data.time_zone
         this.utc_offset = data.utc_offset
     }
