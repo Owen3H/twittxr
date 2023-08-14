@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-extra'
+const puppeteer = require('puppeteer-extra')
 
 import { extractTimelineData, getPuppeteerContent } from "./util.js"
 import { ParseError } from "./errors.js"
@@ -22,7 +22,7 @@ export default class Timeline {
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
         if (!this.browser) {
-            this.browser = await puppeteer.default.launch({ headless: 'new' })
+            this.browser = await puppeteer.launch({ headless: 'new' })
         }
 
         const html = await getPuppeteerContent(this.browser, url, cookie)
@@ -41,12 +41,12 @@ export default class Timeline {
      * 
      * @param username The user handle without the ``@``. 
      * 
-     * Example:
+     * @param options The options to use with the request, see {@link TweetOptions}.
+     * * Example:
      * 
      * ```js
-     * "elonmusk"
+     * Timeline.get('elonmusk', { replies: true, retweets: false, cookie: process.env.TWITTER_COOKIE }
      * ```
-     * @param options The options to use with the request, see {@link TweetOptions}.
      */
     static async get(
         username: string, 

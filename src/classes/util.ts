@@ -1,12 +1,12 @@
 import { request } from 'undici'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
-import puppeteer from 'puppeteer-extra'
+const puppeteer = require('puppeteer-extra')
 
-import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
-import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+const AdBlocker = require('puppeteer-extra-plugin-adblocker')
+const Stealth = require('puppeteer-extra-plugin-stealth')
 
-puppeteer.default.use(AdblockerPlugin.default()).use(StealthPlugin())
+puppeteer.use(AdBlocker()).use(Stealth())
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
