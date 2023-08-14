@@ -10,7 +10,7 @@ class TweetEmbed {
     readonly id: string
     readonly text: string
     readonly isEdited: boolean
-    readonly entities: TweetEntities
+    readonly entities: Partial<TweetEntities>
     readonly parent?: TweetEmbed
     readonly user: User
     readonly inReplyToName?: string

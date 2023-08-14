@@ -133,6 +133,13 @@ class TimelineUser extends User {
     location: string
     protected: boolean
     url: string
+    time_zone: string
+    listedCount: number
+    utc_offset: number
+    notifications: boolean
+    following: boolean
+    followedBy: boolean
+    followRequestSent: boolean
 
     constructor(data: RawTimelineUser) {
         super(data)
@@ -142,15 +149,26 @@ class TimelineUser extends User {
         this.defaultProfile = data.default_profile
         this.defaultProfileImage = data.default_profile_image
         this.entities = data.entities
+
+        this.notifications = data.notifications
+        this.following = data.following
+        this.followedBy = data.followed_by
+        this.followRequestSent = data.follow_request_sent
+
         this.followersCount = data.fast_followers_count
         this.followersCount = data.normal_followers_count
         this.likesCount = data.favourites_count
         this.friendsCount = data.friends_count
         this.mediaCount = data.media_count
         this.statusesCount = data.statuses_count
+        this.listedCount = data.listed_count
+
         this.location = data.location
         this.url = data.url
         this.protected = data.protected
+
+        this.time_zone = data.time_zone
+        this.utc_offset = data.utc_offset
     }
 }
 

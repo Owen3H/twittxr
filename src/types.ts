@@ -1,3 +1,7 @@
+type DynamicProps<T> = {
+    [key: string]: T
+}
+
 export type BaseUser = {
     name: string
     screen_name: string
@@ -5,6 +9,7 @@ export type BaseUser = {
 }
 
 export type UserMention = BaseUser & {
+    id?: number
     indices: number[]
 }
 
@@ -14,41 +19,78 @@ export type RawTimelineUser = BaseUser & {
     default_profile: boolean
     default_profile_image: boolean
     description: string
+    notifications: boolean
+    following?: boolean
+    followed_by?: boolean
+    follow_request_sent?: boolean
     fast_followers_count: number
     normal_followers_count: number
     followers_count: number
     favourites_count: number
+    listed_count: number
     media_count: number
     statuses_count: number
     friends_count: number
     location: string
-    listed_count: number
     profile_banner_url: string
     profile_image_url_https: string
     protected: boolean
     verified: boolean
     is_blue_verified: boolean
     url: string
-    entities: UserEntities
+    entities?: UserEntities
+    utc_offset: number
+    time_zone: string
 }
-
-type DynamicProps<T> = {
-    [key: string]: T
-}
-
-export type UrlEntity = { urls: DynamicProps<string> }
 
 export type UserEntities = {
-    description: UrlEntity
-    url: UrlEntity
+    description: { urls: DynamicProps<string>[] }
+    url: { urls: UrlEntity[] }
 }
 
 export type TweetEntities = {
-    hashtags?: unknown[]
-    media?: unknown[]
-    symbols: unknown[]
-    urls: unknown[]
-    user_mentions?: UserMention[]
+    hashtags: { text: string }[]
+    symbols: { text: string }[]
+    media: TweetMedia[]
+    urls: UrlEntity[]
+    user_mentions: UserMention[]
+}
+
+export type TweetMedia = UrlEntity & {
+    features: DynamicProps<[]>
+    id_str: string
+    media_url?: string
+    media_url_https: string
+    original_info: {
+        height: number
+        width: number
+        focus_rects: DynamicProps<number>[]
+    }
+    type: string
+    sizes: {
+        small: MediaSize
+        medium: MediaSize
+        large: MediaSize
+        thumb: MediaSize
+    }
+}
+
+export type UrlEntity = {
+    url: string
+    expanded_url: string
+    display_url: string
+    unwound?: {
+        url: string
+        status: number
+        title: string
+        description: string
+    }
+}
+
+export type MediaSize = {
+    w: number
+    h: number
+    resize: string
 }
 
 export type RawTimelineEntry = {
@@ -75,26 +117,23 @@ export type RawTimelineTweet = {
     lang: string
     location: string
     retweeted_status?: RawTimelineTweet
-    entities?: TweetEntities 
+    entities?: Partial<TweetEntities> 
 }
 
 export type RawTweet = {
-    parent: RawTweet
-    user: RawUser
-    conversation_count: number
-    entities: TweetEntities
-    isEdited: boolean
-    text: string
     id_str: string
     created_at: string
+    isEdited: boolean
+    text: string
+    conversation_count: number
+    entities?: Partial<TweetEntities>
+    parent?: RawTweet
+    user: RawUser
 }
 
-export type RawUser = {
-    id_str: string
+export type RawUser = BaseUser & {
     is_blue_verified: boolean
-    name: string
     profile_image_url_https: string
-    screen_name: string
     verified: boolean
 }
 
