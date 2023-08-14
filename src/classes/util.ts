@@ -74,7 +74,5 @@ const extractTimelineData = (html: string) => {
 
 export {
     sendReq, getPuppeteerContent,
-    extractTimelineData,
-    FetchError,
-    HttpError
+    extractTimelineData
 }

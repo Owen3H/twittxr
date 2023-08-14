@@ -2,6 +2,7 @@ import { RawTweet, TweetEntities } from "../types.js"
 import { sendReq } from "./util.js"
 
 import User from "./user.js"
+import { FetchError } from "./errors.js"
 
 class TweetEmbed {
     readonly conversationCount?: number
@@ -43,13 +44,20 @@ class TweetEmbed {
 export default class Tweet {
     static readonly url = 'https://cdn.syndication.twimg.com/tweet-result?id='
 
-    static async #fetchTweet(url: string) {
-        const data = await sendReq(url).then(body => body.json())
-        return data as RawTweet
+    static async #fetchTweet(id: string) {
+        try {
+            const data = await sendReq(this.url + id).then(body => body.json())
+            return data as RawTweet
+        }
+        catch (e: unknown) {
+            const errPrefix = `An error occurred fetching Tweet '${id}'`
+            const err = e instanceof Error ? e.message : e.toString()
+            throw new FetchError(`${errPrefix}\n${err}`)
+        }
     }
 
     static async get(id: string | number) {
-        const tweet = await this.#fetchTweet(this.url + id)
+        const tweet = await this.#fetchTweet(id.toString())
         return new TweetEmbed(tweet)
     }
 }

@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-extra')
 
 import { extractTimelineData, getPuppeteerContent } from "./util.js"
-import { ParseError } from "./errors.js"
+import { FetchError, ParseError } from "./errors.js"
 
 import User from "./user.js"
 
@@ -60,17 +60,19 @@ export default class Timeline {
         const proxy = options.proxyUrl ?? ''
         const endpoint = `${proxy}${this.url}${username}?showReplies=${showReplies}`
 
-        const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
-        if (!timeline) return // TODO: Properly handle error
+        try {
+            const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
+            const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
-        const includeReplies = options.replies || false,
-              includeRts = options.retweets || false
+            const includeReplies = options.replies || false
+            const includeRts = options.retweets || false
 
-        const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
-        return tweets.filter(twt =>
-            (twt.isRetweet === includeRts) && 
-            (twt.isReply === includeReplies)
-        )
+            return tweets.filter(t => t.isRetweet === includeRts && t.isReply === includeReplies)
+        } catch (e: unknown) {
+            const errPrefix = `An error occurred fetching Timeline of '${username}'`
+            const err = e instanceof Error ? e.message : e.toString()
+            throw new FetchError(`${errPrefix}\n${err}`)
+        }
     }
 
     static at = (username: string, index: number) => this.get(username).then(arr => arr[index])
