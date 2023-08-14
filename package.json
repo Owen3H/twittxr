@@ -1,6 +1,6 @@
 {
   "name": "twittxr",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Extract information from Twitter via the Syndication API without authentication.",
   "type": "module",
   "exports": {
