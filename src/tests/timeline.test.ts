@@ -43,7 +43,7 @@ describe('Timeline get', () => {
     })
     
     it('can return valid response using a proxy', async () => {
-        const timeline = await Timeline.get('elonmusk')
+        const timeline = await Timeline.get('elonmusk', { proxyUrl: 'https://corsproxy.io?' })
 
         expect(timeline).toBeDefined()
         assertType<TimelineTweet[]>(timeline)
@@ -54,7 +54,7 @@ describe('Timeline get', () => {
         expect(cookie).toBeDefined()
 
         it('includes nsfw/sensitive tweet(s)', async () => {
-            const timeline = await Timeline.get('rileyreidx3', { cookie, proxyUrl: '' })
+            const timeline = await Timeline.get('rileyreidx3', { cookie })
     
             expect(timeline).toBeDefined()
             assertType<TimelineTweet[]>(timeline)
