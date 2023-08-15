@@ -37,7 +37,7 @@
   "homepage": "https://github.com/Owen3H/twittxr#readme",
   "dependencies": {
     "tslib": "latest",
-    "undici": "latest"
+    "undici-shim": "latest"
   },
   "optionalDependencies": {
     "puppeteer-extra": "^3.3.6",

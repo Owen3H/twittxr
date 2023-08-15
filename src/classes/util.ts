@@ -1,4 +1,4 @@
-import { request } from 'undici'
+import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
@@ -24,7 +24,9 @@ async function sendReq(url: string, cookie?: string) {
     if (res.statusCode !== 200 && res.statusCode !== 304)
         throw new HttpError('Server responded with an error!', res.statusCode)
 
-    return res.body
+    // When running outside of Node, built-in fetch is used - therefore, 
+    // fallback to original response since `body` won't be defined.
+    return res.body ?? res
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
