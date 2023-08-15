@@ -1,6 +1,4 @@
-const puppeteer = require('puppeteer-extra')
-
-import { extractTimelineData, getPuppeteerContent } from "./util.js"
+import { extractTimelineData, getPuppeteerContent, sendReq } from "./util.js"
 import { FetchError, ParseError } from "./errors.js"
 
 import User from "./user.js"
@@ -15,17 +13,40 @@ const domain = 'https://twitter.com'
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
-    private static browser = null
-    get browser() {
-        return this.browser
+    private static puppeteer = {
+        use: false,
+        browser: null
+    }
+
+    /**
+     * Use puppeteer to get the timeline, bypassing potential Cloudflare issues.
+     * Unless `browser` is passed, a basic headless one is used with `Stealth` & `AdBlocker` plugins.
+     * 
+     * @param browser A custom browser to use instead of the default.
+     */
+    static async usePuppeteer(browser?: unknown) {
+        if (browser) {
+            this.puppeteer.browser = browser
+        }
+        else {
+            const puppeteer = require('puppeteer-extra')
+
+            const AdBlocker = require('puppeteer-extra-plugin-adblocker')
+            const Stealth = require('puppeteer-extra-plugin-stealth')
+        
+            puppeteer.use(AdBlocker()).use(Stealth())
+        
+            this.puppeteer.browser = await puppeteer.launch({ headless: 'new' })
+        }
+
+        this.puppeteer.use = true
     }
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
-        if (!this.browser) {
-            this.browser = await puppeteer.launch({ headless: 'new' })
-        }
+        const html = this.puppeteer.use 
+            ? await getPuppeteerContent(this.puppeteer.browser, url, cookie)
+            : await sendReq(url, cookie).then(body => body.text())
 
-        const html = await getPuppeteerContent(this.browser, url, cookie)
         const data = extractTimelineData(html)
     
         if (!data) {
@@ -38,14 +59,23 @@ export default class Timeline {
     }
 
     /**
+     * Fetches all tweets by the specified user. 
+     * 
+     * **Default behaviour**
+     * - Replies and retweets are not included.
+     * - No proxy or cookie is used.
      * 
      * @param username The user handle without the ``@``. 
-     * 
      * @param options The options to use with the request, see {@link TweetOptions}.
-     * * Example:
+     * 
+     * Example:
      * 
      * ```js
-     * Timeline.get('elonmusk', { replies: true, retweets: false, cookie: process.env.TWITTER_COOKIE }
+     * await Timeline.get('elonmusk', { 
+     *ㅤㅤreplies: true, 
+     *ㅤㅤretweets: false, 
+     *ㅤㅤcookie: process.env.TWITTER_COOKIE 
+     * })
      * ```
      */
     static async get(
@@ -75,8 +105,24 @@ export default class Timeline {
         }
     }
 
-    static at = (username: string, index: number) => this.get(username).then(arr => arr[index])
-    static latest = (username: string) => this.at(username, 0)
+    /**
+     * Works exactly the same as `.get()`, but just returns the most recent tweet.
+     * 
+     * Intended to be used as shorthand for the following:
+     * 
+     * ```js
+     * await Timeline.get().then(arr => arr[0])
+     * ```
+     */
+    static latest(
+        username: string, 
+        options: Partial<TweetOptions> = {
+            proxyUrl: null,
+            cookie: null
+        }
+    ) {
+        return this.get(username, options).then(arr => arr[0])
+    }
 }
 
 class TimelineTweet {

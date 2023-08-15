@@ -1,13 +1,6 @@
 import { request } from 'undici'
 import { FetchError, ParseError, HttpError } from './errors.js'
 
-const puppeteer = require('puppeteer-extra')
-
-const AdBlocker = require('puppeteer-extra-plugin-adblocker')
-const Stealth = require('puppeteer-extra-plugin-stealth')
-
-puppeteer.use(AdBlocker()).use(Stealth())
-
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
 const headers = (cookie?: string) => {
@@ -37,6 +30,7 @@ async function sendReq(url: string, cookie?: string) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getPuppeteerContent(browser: any, url: string, cookie?: string) {
     const page = await browser.newPage()
+
     try {
         await page.setExtraHTTPHeaders(headers(cookie))
         await page.goto(url, { waitUntil: 'load' })
