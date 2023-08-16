@@ -48,11 +48,7 @@ export default class Timeline {
             : await sendReq(url, cookie).then(body => body.text())
 
         const data = extractTimelineData(html)
-    
-        if (!data) {
-            console.error(new ParseError('Script tag not found or JSON data missing.'))
-            return null
-        }
+        if (!data) throw new ParseError('Script tag not found or JSON data missing.')
     
         const timeline = JSON.parse(data)
         return timeline?.props?.pageProps?.timeline?.entries
@@ -65,7 +61,7 @@ export default class Timeline {
      * - Replies and retweets are not included.
      * - No proxy or cookie is used.
      * 
-     * @param username The user handle without the ``@``. 
+     * @param username The user handle without the ``@``.
      * @param options The options to use with the request, see {@link TweetOptions}.
      * 
      * Example:
