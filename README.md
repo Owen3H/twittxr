@@ -1,12 +1,15 @@
 <div align="left">
   <a href="https://twitter.com/elonmusk/status/1685096284275802112">
-    <img align="left" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="110">
+    <img align="left" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="120">
   </a>
   <h2>Twittxr</h2>
 </div>
 
 A simple wrapper library around the Twitter Syndication API.<br>
 Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3295160336cf41108ab4b409f6baf6c5)](https://app.codacy.com/gh/Owen3H/twittxr/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![node-current](https://img.shields.io/node/v/twittxr)
 
 ## About
 The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
@@ -21,7 +24,7 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 - Intuitive syntax and included types.
 
 #### ❌ Drawbacks
-- When getting a Timeline, only up to `100` Tweets can be returned.
+- When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install & Import
