@@ -1,5 +1,13 @@
 import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Impossible<K extends keyof any> = {
+    [P in K]: never
+}
+
+export type Exact<T, U extends T = T> = 
+    U & Impossible<Exclude<keyof U, keyof T>>
+
 type DynamicProps<T> = {
     [key: string]: T
 }
@@ -10,10 +18,18 @@ type DeepInfer<T> = {
 
 type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
 export type PuppeteerConfig = LaunchOptions & {
-    browser?: Browser,
-    page?: Page,
+    browser?: Browser
+    page?: Page
     autoClose?: boolean
 }
+
+export type TwitterCookies = Exact<{
+    guest_id?: string
+    auth_token: string
+    auth_multi?: string
+    ct0: string
+    kdt: string
+}>
 
 export type BaseUser = {
     name: string

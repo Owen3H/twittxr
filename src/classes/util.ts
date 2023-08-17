@@ -1,6 +1,6 @@
 import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError, ConfigError } from './errors.js'
-import { PuppeteerConfig } from '../types.js'
+import { PuppeteerConfig, TwitterCookies } from '../types.js'
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
@@ -13,6 +13,23 @@ const headers = (cookie?: string) => {
     return obj
 }
 
+const buildCookieString = (cookies: TwitterCookies) => {
+    const obj = {
+        ...cookies,
+        dnt: 1,
+        des_opt_in: "N",
+        twtr_pixel_opt_in: "N",
+        at_check: true
+    }
+
+    let str = ""
+    Object.entries(obj).forEach(e => {
+        str += `${e[0]}=${e[1]}; `
+    })
+
+    return str.trimEnd()
+}
+
 /**
  * Sends a request to the API with a mock user agent, returning either the
  * response body or an {@link HttpError} including the status code.
@@ -22,8 +39,10 @@ async function sendReq(url: string, cookie?: string) {
     const res = await request(url, { headers: headers(cookie) })
 
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
-    if (res.statusCode !== 200 && res.statusCode !== 304)
-        throw new HttpError('Server responded with an error!', res.statusCode)
+
+    const code = res.statusCode
+    if (code !== 200 && code !== 304)
+        throw new HttpError(`Server responded with an error!\nStatus code: ${code}`, code)
 
     // When running outside of Node, built-in fetch is used - therefore, 
     // fallback to original response since `body` won't be defined.
@@ -76,6 +95,7 @@ const extractTimelineData = (html: string) => {
 }
 
 export {
-    sendReq, getPuppeteerContent,
+    sendReq, buildCookieString,
+    getPuppeteerContent,
     extractTimelineData
 }

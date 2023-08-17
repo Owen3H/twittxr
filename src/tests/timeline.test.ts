@@ -14,7 +14,7 @@ it('timeline is setup correctly', () => {
     expectTypeOf(Timeline.latest).toBeFunction()
 })
 
-describe('Timeline get', () => {
+describe('Timeline get', async () => {
     it.skip('timeline can be retrieved successfully', async () => {
 
         // Expect not to be an error.
@@ -25,7 +25,8 @@ describe('Timeline get', () => {
     it('can use puppeteer with no config', async () => {
         await Timeline.usePuppeteer()
         const timeline = await Timeline.get('elonmusk')
-        
+        Timeline.disablePuppeteer()
+
         expect(timeline).toBeDefined()
         assertType<TimelineTweet[]>(timeline)
     })
@@ -48,16 +49,16 @@ describe('Timeline get', () => {
         expect.soft(count).toEqual(timeline.length)
     })
     
-    it('can return valid response using a proxy', async () => {
-        const timeline = await Timeline.get('elonmusk', { proxyUrl: 'https://corsproxy.io?' })
-
-        expect(timeline).toBeDefined()
-        assertType<TimelineTweet[]>(timeline)
-    })
-
     if (!process.env.GITHUB_ACTIONS) {
         const cookie = process.env.COOKIE_STRING
         expect(cookie).toBeDefined()
+
+        it('can return valid response using a proxy', async () => {
+            await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' }).then(timeline => {
+                expect(timeline).toBeDefined()
+                assertType<TimelineTweet[]>(timeline)
+            })//.catch(console.error)
+        })
 
         it('includes nsfw/sensitive tweet(s)', async () => {
             const timeline = await Timeline.get('rileyreidx3', { cookie })
