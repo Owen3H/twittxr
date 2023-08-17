@@ -15,19 +15,22 @@ Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
 <br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
-#### ✅ Benefits
+#### ✅ Features
 - Completely auth-free, no tokens or login required.
-- Powered by [puppeteer-extra](https://github.com/berstend/puppeteer-extra). (With `Stealth` and `AdBlocker` plugins)
 - Option to include retweets and/or replies.
 - Option to pass a cookie string, **required for NSFW tweets to be included**.
+- Ability to pass a [Puppeteer](https://pptr.dev) page, bypassing potential API auth issues.
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
 - Intuitive syntax and included types.
 
-#### ❌ Drawbacks
+#### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Install & Import
+> **Note** 
+> If you intend to use Puppeteer, you must have `puppeteer` or `puppeteer-extra` installed also.
+
 ```sh
 pnpm add twittxr
 ```
@@ -56,4 +59,61 @@ const tweets = await Timeline.get('elonmusk', {
     proxyUrl: 'https://corsproxy.io?', // Example proxy
     cookie: 'yourCookieString' // Necessary for sensitive tweets to be included.
 })
+```
+
+### Using Puppeteer
+```js
+import { Timeline } from 'twittxr'
+```
+
+<details>
+  <summary>No config</summary>
+
+```js
+// Launches a basic headless browser & auto closes the page.
+await Timeline.usePuppeteer()
+const tweets = await Timeline.get('elonmusk')
+
+await page.goto('https://google.com') // Continue to manipulate the page.
+await page.close() // Close the page manually.
+```
+</details>
+
+<details>
+  <summary>With custom browser</summary>
+
+```js
+const puppeteer = require('puppeteer-extra')
+
+// Use plugins if desired
+puppeteer.use(ExamplePlugin())
+
+const browser = await puppeteer.launch({ headless: true })
+
+// Creates a new page and closes it automatically after every .get() call
+await Timeline.usePuppeteer({ browser, autoClose: true })
+const tweets = await Timeline.get('elonmusk')
+```
+</details>
+
+<details>
+  <summary>With page</summary>
+
+```js
+const puppeteer = require('puppeteer')
+const browser = await puppeteer.launch({ headless: true })
+const page = await browser.newPage()
+
+// Pass the page, but do not automatically close it.
+await Timeline.usePuppeteer({ page, autoClose: false })
+const tweets = await Timeline.get('elonmusk')
+
+await page.goto('https://google.com') // Continue to manipulate the page.
+await page.close() // Close the page manually.
+```
+</details>
+
+After calling `usePuppeteer`, stopping it again at any point is as simple as
+```js
+Timeline.disablePuppeteer()
 ```

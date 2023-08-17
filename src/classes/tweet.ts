@@ -64,4 +64,5 @@ export default class Tweet {
 
 export {
     Tweet,
+    TweetEmbed
 }

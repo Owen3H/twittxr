@@ -8,11 +8,9 @@ import {
 
 it('timeline is setup correctly', () => {
     expect(Timeline).toHaveProperty('get')
-    expect(Timeline).toHaveProperty('at')
     expect(Timeline).toHaveProperty('latest')
 
     expectTypeOf(Timeline.get).toBeFunction()
-    expectTypeOf(Timeline.at).toBeFunction()
     expectTypeOf(Timeline.latest).toBeFunction()
 })
 
@@ -22,6 +20,14 @@ describe('Timeline get', () => {
         // Expect not to be an error.
         // Expect structure is valid.
     
+    })
+
+    it('can use puppeteer with no config', async () => {
+        await Timeline.usePuppeteer()
+        const timeline = await Timeline.get('elonmusk')
+        
+        expect(timeline).toBeDefined()
+        assertType<TimelineTweet[]>(timeline)
     })
 
     it('correctly gets matching tweets according to options', async () => {

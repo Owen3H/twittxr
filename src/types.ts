@@ -1,5 +1,18 @@
+import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
+
 type DynamicProps<T> = {
     [key: string]: T
+}
+
+type DeepInfer<T> = {
+    [K in keyof T]: T[K]
+}
+
+type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
+export type PuppeteerConfig = LaunchOptions & {
+    browser?: Browser,
+    page?: Page,
+    autoClose?: boolean
 }
 
 export type BaseUser = {

@@ -42,12 +42,16 @@
     "tslib": "latest",
     "undici-shim": "latest"
   },
-  "optionalDependencies": {
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-adblocker": "^2.13.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  "peerDependencies": {
+    "puppeteer": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "puppeteer": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "puppeteer": "latest",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",

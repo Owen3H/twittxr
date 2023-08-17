@@ -1,5 +1,6 @@
 import { request } from 'undici-shim'
-import { FetchError, ParseError, HttpError } from './errors.js'
+import { FetchError, ParseError, HttpError, ConfigError } from './errors.js'
+import { PuppeteerConfig } from '../types.js'
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
@@ -29,21 +30,27 @@ async function sendReq(url: string, cookie?: string) {
     return res.body ?? res
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function getPuppeteerContent(browser: any, url: string, cookie?: string) {
-    const page = await browser.newPage()
+async function getPuppeteerContent(config: PuppeteerConfig & { 
+    url: string,
+    cookie?: string
+}) {
+    const { browser, cookie, url } = config
+    let page = config?.page
 
     try {
+        if (!page) {
+            if (browser) page = await browser.newPage()
+            else throw new ConfigError('Failed to use Puppeteer! Either `page` or `browser` need to be specified.') 
+        }
+
         await page.setExtraHTTPHeaders(headers(cookie))
         await page.goto(url, { waitUntil: 'load' })
 
         return await page.content()
     }
-    catch(e) {
-        console.error(e)
-    }
+    catch(e) { console.error(e) }
     finally {
-        await page.close()
+        if (config.autoClose) await page.close()
     }
 }
 

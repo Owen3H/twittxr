@@ -2,8 +2,10 @@ import { extractTimelineData, getPuppeteerContent, sendReq } from "./util.js"
 import { FetchError, ParseError } from "./errors.js"
 
 import User from "./user.js"
+import puppeteer from 'puppeteer'
 
 import { 
+    PuppeteerConfig,
     RawTimelineEntry,
     RawTimelineTweet, RawTimelineUser,
     TweetOptions, UserEntities 
@@ -15,36 +17,40 @@ export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
     private static puppeteer = {
         use: false,
-        browser: null
+        config: null
     }
 
     /**
      * Use puppeteer to get the timeline, bypassing potential Cloudflare issues.
-     * Unless `browser` is passed, a basic headless one is used with `Stealth` & `AdBlocker` plugins.
+     * Unless `browser` is defined in {@link config}, a basic headless one is used.
      * 
-     * @param browser A custom browser to use instead of the default.
+     * @param config Used to configure how Puppeteer should behave.
      */
-    static async usePuppeteer(browser?: unknown) {
-        if (browser) {
-            this.puppeteer.browser = browser
+    static async usePuppeteer(config?: PuppeteerConfig) {
+        if (config) {
+            if (!config.browser) {
+                config.browser = await puppeteer.launch(config)
+            }
+
+            this.puppeteer.config = config
         }
         else {
-            const puppeteer = require('puppeteer-extra')
-
-            const AdBlocker = require('puppeteer-extra-plugin-adblocker')
-            const Stealth = require('puppeteer-extra-plugin-stealth')
-        
-            puppeteer.use(AdBlocker()).use(Stealth())
-        
-            this.puppeteer.browser = await puppeteer.launch({ headless: 'new' })
+            this.puppeteer.config = {
+                browser: await puppeteer.launch({ headless: 'new' }),
+                autoClose: true
+            }
         }
 
         this.puppeteer.use = true
     }
 
+    static async disablePuppeteer() {
+        this.puppeteer.use = false
+    }
+
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
-        const html = this.puppeteer.use 
-            ? await getPuppeteerContent(this.puppeteer.browser, url, cookie)
+        const html = this.puppeteer.use
+            ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
             : await sendReq(url, cookie).then(body => body.text())
 
         const data = extractTimelineData(html)
