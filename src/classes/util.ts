@@ -2,6 +2,9 @@ import { request } from 'undici-shim'
 import { FetchError, ParseError, HttpError, ConfigError } from './errors.js'
 import { PuppeteerConfig, TwitterCookies } from '../types.js'
 
+const hasProp = (obj: unknown, name: string) =>
+    Object.prototype.hasOwnProperty.call(obj, name)
+
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
 const headers = (cookie?: string) => {
@@ -48,6 +51,11 @@ async function sendReq(url: string, cookie?: string) {
     return res.body ?? res
 }
 
+/**
+ * Does the same as {@link sendReq} but grabs the page HTML response by
+ * using Puppeteer to navigate to the API endpoint.
+ * @internal
+ */
 async function getPuppeteerContent(config: PuppeteerConfig & { 
     url: string,
     cookie?: string
@@ -61,9 +69,13 @@ async function getPuppeteerContent(config: PuppeteerConfig & {
             else throw new ConfigError('Failed to use Puppeteer! Either `page` or `browser` need to be specified.') 
         }
 
-        await page.setExtraHTTPHeaders(headers(cookie))
-        await page.goto(url, { waitUntil: 'load' })
+        if (hasProp(page, 'setBypassCSP'))
+            await page.setBypassCSP(true)
 
+        if (hasProp(page, 'setExtraHTTPHeaders'))
+            await page.setExtraHTTPHeaders(headers(cookie))
+        
+        await page.goto(url, { waitUntil: 'load' })
         return await page.content()
     }
     catch(e) { console.error(e) }

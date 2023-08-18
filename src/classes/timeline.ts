@@ -84,7 +84,6 @@ export default class Timeline {
      * @param options The options to use with the request, see {@link TweetOptions}.
      * 
      * Example:
-     * 
      * ```js
      * await Timeline.get('elonmusk', { 
      *ㅤㅤreplies: true, 
