@@ -59,11 +59,16 @@ export default class Timeline {
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
             : await sendReq(url, cookie)
                 .then(body => body.text())
-                .catch(async () => {
-                    console.log('Falling back to Puppeteer!\nURL: ' + url)
+                .catch(async err => {
+                    //console.log('Falling back to Puppeteer!\nURL: ' + url)
 
-                    await this.setBasicBrowser() // Don't actually "use" puppeteer, were just falling back.
-                    return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
+                    if (puppeteer) {
+                        await this.setBasicBrowser() // Don't actually "use" puppeteer, were just falling back.
+                        return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
+                    }
+
+                    // Can't fallback, re-throw original error.
+                    throw err
                 })
 
         const data = extractTimelineData(html)

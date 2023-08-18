@@ -66,8 +66,8 @@ const tweets = await Timeline.get('elonmusk', {
 
 ### Using Puppeteer
 > **Note**
-> By default, Puppeteer is only used as a fallback on failed requests.
-> However, `usePuppeter()` will make Twittxr solely use Puppeteer.
+> By default, Puppeteer will be used as a fallback for failed requests - if installed.
+> However, it is possible to solely use Puppeteer by calling `await usePuppeteer()`.
 
 ```js
 import { Timeline } from 'twittxr'
@@ -117,7 +117,7 @@ await page.close() // Close the page manually.
 ```
 </details>
 
-After calling `usePuppeteer`, stopping it again at any point is as simple as
+To stop using Puppeteer at any point, you can simply call:
 ```js
 Timeline.disablePuppeteer()
 ```
