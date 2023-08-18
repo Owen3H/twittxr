@@ -24,8 +24,10 @@ describe('Timeline get', async () => {
 
     it('can use puppeteer with no config', async () => {
         await Timeline.usePuppeteer()
-        const timeline = await Timeline.get('elonmusk')
+        const timeline = await Timeline.get('elonmusk', { cookie: process.env.COOKIE_STRING })
         Timeline.disablePuppeteer()
+
+        console.log(timeline[0])
 
         expect(timeline).toBeDefined()
         assertType<TimelineTweet[]>(timeline)
@@ -57,15 +59,9 @@ describe('Timeline get', async () => {
         it('can return valid response using a proxy', async () => {
             try {
                 timeline = await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' })
-            } catch (e: unknown) {
-                // Error occurred, try puppeteer for potential fix.
-                await Timeline.usePuppeteer()
-                timeline = await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' })
             } finally {
                 expect(timeline).toBeDefined()
                 assertType<TimelineTweet[]>(timeline)
-
-                Timeline.disablePuppeteer()
             }
         })
 

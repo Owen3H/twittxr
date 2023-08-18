@@ -27,20 +27,23 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
-## Install & Import
-> **Note** 
-> If you intend to use Puppeteer, you must have `puppeteer` or `puppeteer-extra` installed also.
-
+## Installation
+**NPM**
 ```sh
-pnpm add twittxr
+npm i twittxr puppeteer
 ```
 
+**Yarn** or **PNPM**
+```sh
+yarn/pnpm add twittxr puppeteer
+```
+
+## Usage
 ```js
 import { Timeline, Tweet } from 'twittxr' // ESM
 const { Timeline, Tweet } = require('twittxr') // CommonJS
 ```
 
-## Usage
 ### Get a single Tweet
 ```js
 // Does not return the same type as Timeline.get()
@@ -62,6 +65,10 @@ const tweets = await Timeline.get('elonmusk', {
 ```
 
 ### Using Puppeteer
+> **Note**
+> By default, Puppeteer is only used as a fallback on failed requests.
+> However, `usePuppeter()` will make Twittxr solely use Puppeteer.
+
 ```js
 import { Timeline } from 'twittxr'
 ```

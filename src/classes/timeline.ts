@@ -27,31 +27,44 @@ export default class Timeline {
      * @param config Used to configure how Puppeteer should behave.
      */
     static async usePuppeteer(config?: PuppeteerConfig) {
+        if (!this.puppeteer.use) return   
+        this.puppeteer.use = true
+
         if (config) {
             if (!config.browser) {
                 config.browser = await puppeteer.launch(config)
             }
 
             this.puppeteer.config = config
+            return
         }
-        else {
-            this.puppeteer.config = {
-                browser: await puppeteer.launch({ headless: 'new' }),
-                autoClose: true
-            }
-        }
-
-        this.puppeteer.use = true
+        
+        // No config, create and use headless one.
+        await this.setBasicBrowser()
     }
 
     static async disablePuppeteer() {
         this.puppeteer.use = false
     }
 
+    private static async setBasicBrowser() {
+        this.puppeteer.config = {
+            browser: await puppeteer.launch({ headless: 'new' }),
+            autoClose: true
+        }
+    }
+
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
         const html = this.puppeteer.use
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
-            : await sendReq(url, cookie).then(body => body.text())
+            : await sendReq(url, cookie)
+                .then(body => body.text())
+                .catch(async () => {
+                    console.log('Falling back to Puppeteer!\nURL: ' + url)
+
+                    await this.setBasicBrowser() // Don't actually "use" puppeteer, were just falling back.
+                    return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
+                })
 
         const data = extractTimelineData(html)
         if (!data) throw new ParseError('Script tag not found or JSON data missing.')

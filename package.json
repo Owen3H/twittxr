@@ -47,7 +47,7 @@
   },
   "peerDependenciesMeta": {
     "puppeteer": {
-      "optional": true
+      "optional": false
     }
   },
   "devDependencies": {

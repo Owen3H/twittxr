@@ -37,7 +37,6 @@ const buildCookieString = (cookies: TwitterCookies) => {
  */
 async function sendReq(url: string, cookie?: string) {
     const res = await request(url, { headers: headers(cookie) })
-
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
 
     const code = res.statusCode
