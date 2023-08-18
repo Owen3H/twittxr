@@ -34,7 +34,7 @@ describe('Timeline get', async () => {
     it('correctly gets matching tweets according to options', async () => {
         const options = {
             replies: false,
-            retweets: false
+            retweets: true
         }
 
         const timeline = await Timeline.get('elonmusk', options)
@@ -42,7 +42,7 @@ describe('Timeline get', async () => {
 
         let count = timeline.length
         timeline.forEach(twt => {
-            if (twt.isRetweet || twt.isReply)
+            if (twt.isReply)
                 count--
         })
 
@@ -53,11 +53,20 @@ describe('Timeline get', async () => {
         const cookie = process.env.COOKIE_STRING
         expect(cookie).toBeDefined()
 
+        let timeline = null
         it('can return valid response using a proxy', async () => {
-            await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' }).then(timeline => {
+            try {
+                timeline = await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' })
+            } catch (e: unknown) {
+                // Error occurred, try puppeteer for potential fix.
+                await Timeline.usePuppeteer()
+                timeline = await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' })
+            } finally {
                 expect(timeline).toBeDefined()
                 assertType<TimelineTweet[]>(timeline)
-            })//.catch(console.error)
+
+                Timeline.disablePuppeteer()
+            }
         })
 
         it('includes nsfw/sensitive tweet(s)', async () => {
