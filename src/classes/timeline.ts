@@ -56,20 +56,15 @@ export default class Timeline {
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
         const html = this.puppeteer.use
-            ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
-            : await sendReq(url, cookie)
-                .then(body => body.text())
-                .catch(async err => {
-                    //console.log('Falling back to Puppeteer!\nURL: ' + url)
+            ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
+            : await sendReq(url, cookie).then(body => body.text()).catch(async err => {
+                // Can't fallback, re-throw original error.
+                if (!puppeteer) throw err
 
-                    if (puppeteer) {
-                        await this.setBasicBrowser() // Don't actually "use" puppeteer, were just falling back.
-                        return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
-                    }
-
-                    // Can't fallback, re-throw original error.
-                    throw err
-                })
+                // Don't actually "use" puppeteer, were just falling back.
+                await this.setBasicBrowser() 
+                return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
+            })
 
         const data = extractTimelineData(html)
         if (!data) throw new ParseError('Script tag not found or JSON data missing.')
