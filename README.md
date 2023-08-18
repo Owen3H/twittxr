@@ -28,14 +28,13 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
 ## Installation
-**NPM**
 ```sh
-npm i twittxr puppeteer
+pnpm add twittxr
 ```
-
-**Yarn** or **PNPM**
+Optionally, you can install `puppeteer` >=16 to use as a fallback on failed requests.<br>
+This will avoid issues with Cloudflare, e.g. "403 Forbidden".
 ```sh
-yarn/pnpm add twittxr puppeteer
+pnpm add twittxr puppeteer
 ```
 
 ## Usage
