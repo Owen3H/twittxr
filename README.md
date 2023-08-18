@@ -70,12 +70,9 @@ import { Timeline } from 'twittxr'
   <summary>No config</summary>
 
 ```js
-// Launches a basic headless browser & auto closes the page.
+// Launches a basic headless browser & automatically closes the page.
 await Timeline.usePuppeteer()
 const tweets = await Timeline.get('elonmusk')
-
-await page.goto('https://google.com') // Continue to manipulate the page.
-await page.close() // Close the page manually.
 ```
 </details>
 
