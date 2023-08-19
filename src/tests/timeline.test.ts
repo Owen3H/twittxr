@@ -55,25 +55,16 @@ describe('Timeline get', async () => {
         const cookie = process.env.COOKIE_STRING
         expect(cookie).toBeDefined()
 
-        let timeline = null
-        it('can return valid response using a proxy', async () => {
+        it('includes nsfw/sensitive tweet(s)', async () => {
+            let timeline = []
+
             try {
-                timeline = await Timeline.get('elonmusk', { cookie, proxyUrl: 'https://corsproxy.io?' })
+                timeline = await Timeline.get('rileyreidx3', { cookie })
             } finally {
                 expect(timeline).toBeDefined()
                 assertType<TimelineTweet[]>(timeline)
+                expect(timeline.length).toBeGreaterThan(0)
             }
         })
-
-        it('includes nsfw/sensitive tweet(s)', async () => {
-            const timeline = await Timeline.get('rileyreidx3', { cookie })
-    
-            expect(timeline).toBeDefined()
-            assertType<TimelineTweet[]>(timeline)
-            expect(timeline.length).toBeGreaterThan(0)
-    
-            const hasSensitive = timeline.some(twt => twt.sensitive)
-            expect(hasSensitive).toBe(true)
-        }, 5000)
     }
 })

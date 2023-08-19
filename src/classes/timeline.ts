@@ -26,9 +26,9 @@ export default class Timeline {
      * 
      * @param config Used to configure how Puppeteer should behave.
      */
-    static async usePuppeteer(config?: PuppeteerConfig) {
+    static async usePuppeteer(config?: PuppeteerConfig, asFallback = false) {
         if (!this.puppeteer.use) return   
-        this.puppeteer.use = true
+        this.puppeteer.use = !asFallback
 
         if (config) {
             if (!config.browser) {
@@ -39,7 +39,7 @@ export default class Timeline {
             return
         }
         
-        // No config, create and use headless one.
+        // No config, set a headless one.
         await this.setBasicBrowser()
     }
 
@@ -61,15 +61,18 @@ export default class Timeline {
                 // Can't fallback, re-throw original error.
                 if (!puppeteer) throw err
 
-                // Don't actually "use" puppeteer, were just falling back.
-                await this.setBasicBrowser() 
-                return await getPuppeteerContent({ ...this.puppeteer.config, url, cookie })
+                const config = this.puppeteer.config
+                if (!config.browser) await this.usePuppeteer(null, true)
+
+                return await getPuppeteerContent({ ...config, url, cookie })
             })
 
         const data = extractTimelineData(html)
         if (!data) throw new ParseError('Script tag not found or JSON data missing.')
     
         const timeline = JSON.parse(data)
+        console.log(timeline?.props?.pageProps?.timeline?.entries[0])
+
         return timeline?.props?.pageProps?.timeline?.entries
     }
 
@@ -94,15 +97,10 @@ export default class Timeline {
      */
     static async get(
         username: string, 
-        options: Partial<TweetOptions> = {
-            proxyUrl: null,
-            cookie: null
-        }
+        options: Partial<TweetOptions>
     ) {
         const showReplies = !options.replies && !!options.cookie
-
-        const proxy = options.proxyUrl ?? ''
-        const endpoint = `${proxy}${this.url}${username}?showReplies=${showReplies}`
+        const endpoint = `${this.url}${username}?showReplies=${showReplies}`
 
         try {
             const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
@@ -123,20 +121,12 @@ export default class Timeline {
      * Works exactly the same as `.get()`, but just returns the most recent tweet.
      * 
      * Intended to be used as shorthand for the following:
-     * 
      * ```js
-     * await Timeline.get().then(arr => arr[0])
+     * await Timeline.get('user').then(arr => arr[0])
      * ```
      */
-    static latest(
-        username: string, 
-        options: Partial<TweetOptions> = {
-            proxyUrl: null,
-            cookie: null
-        }
-    ) {
-        return this.get(username, options).then(arr => arr[0])
-    }
+    static latest = (username: string, options: Partial<TweetOptions>) =>
+        Timeline.get(username, options).then(arr => arr[0])
 }
 
 class TimelineTweet {
@@ -154,7 +144,7 @@ class TimelineTweet {
     readonly sensitive?: boolean
     
     constructor(data: RawTimelineTweet) {
-        this.id = data.id_str
+        this.id = data.conversation_id_str
         this.text = data.text
         this.createdAt = data.created_at
         this.link = domain + data.permalink

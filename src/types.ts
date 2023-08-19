@@ -132,7 +132,6 @@ export type RawTimelineEntry = {
 
 export type RawTimelineTweet = {
     conversation_id_str: string
-    id_str: string
     text: string
     in_reply_to_name: string
     created_at: string
@@ -170,5 +169,4 @@ export type TweetOptions = {
     retweets: boolean
     replies: boolean
     cookie?: string
-    proxyUrl?: string
 }

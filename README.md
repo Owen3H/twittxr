@@ -55,11 +55,10 @@ const tweet = await Tweet.get('1674865731136020505')
 const tweets = await Timeline.get('elonmusk')
 
 // You can pass certain options to override the default behaviour.
-const tweets = await Timeline.get('elonmusk', {
-    replies: true,
-    retweets: false,
-    proxyUrl: 'https://corsproxy.io?', // Example proxy
-    cookie: 'yourCookieString' // Necessary for sensitive tweets to be included.
+const tweetsWithRts = await Timeline.get('elonmusk', {
+    cookie: 'yourCookieString', // Necessary for sensitive tweets to be included.
+    replies: true, // This is the user's replies, not replies to their tweets.
+    retweets: false
 })
 ```
 
