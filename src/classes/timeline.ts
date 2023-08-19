@@ -71,8 +71,6 @@ export default class Timeline {
         if (!data) throw new ParseError('Script tag not found or JSON data missing.')
     
         const timeline = JSON.parse(data)
-        console.log(timeline?.props?.pageProps?.timeline?.entries[0])
-
         return timeline?.props?.pageProps?.timeline?.entries
     }
 

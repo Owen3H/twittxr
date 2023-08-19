@@ -37,17 +37,19 @@ describe('Timeline get', async () => {
         const timeline = await Timeline.get('elonmusk', { cookie: process.env.COOKIE_STRING })
         Timeline.disablePuppeteer()
 
-        console.log(timeline[0])
+        expect(timeline).toBeDefined()
+        assertType<TimelineTweet[]>(timeline)
+        expect(timeline.length).toBeGreaterThan(0)
     })
 
     it('correctly gets matching tweets according to options', async () => {
-        const options = {
-            replies: false,
-            retweets: true
-        }
+        const timeline = await Timeline.get('elonmusk', {
+            replies: false, 
+            retweets: true 
+        })
 
-        const timeline = await Timeline.get('elonmusk', options)
         expect(timeline).toBeDefined()
+        assertType<TimelineTweet[]>(timeline)
 
         let count = timeline.length
         timeline.forEach(twt => {
