@@ -50,7 +50,9 @@ web_modules/
 
 # Custom Exclusions
 */test.js
+*/test.*js
 test.js
+test.*js
 
 dist/
 .vscode/

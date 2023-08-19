@@ -1,4 +1,8 @@
-import { extractTimelineData, getPuppeteerContent, sendReq } from "./util.js"
+import { 
+    buildCookieString, extractTimelineData, 
+    getPuppeteerContent, sendReq 
+} from "./util.js"
+
 import { FetchError, ParseError } from "./errors.js"
 
 import User from "./user.js"
@@ -101,7 +105,10 @@ export default class Timeline {
         const endpoint = `${this.url}${username}?showReplies=${showReplies}`
 
         try {
-            const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
+            const parsedCookie = typeof options.cookie === 'string' 
+                ? options.cookie : buildCookieString(options.cookie)
+
+            const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
             const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
             const includeReplies = options.replies || false

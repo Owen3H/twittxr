@@ -16,12 +16,11 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 <br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
 #### ✅ Features
-- Completely auth-free, no tokens or login required.
-- Option to include retweets and/or replies.
-- Option to pass a cookie string, **required for NSFW tweets to be included**.
+- Can include retweets and/or replies by the user.
+- Option to pass cookie object or string to get **Sensitive/NSFW** Tweets.
 - Ability to pass a [Puppeteer](https://pptr.dev) page, bypassing potential API auth issues.
 - Fast response times thanks to [Undici](https://github.com/nodejs/undici).
-- Intuitive syntax and included types.
+- Intuitive syntax and included type definitions.
 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)

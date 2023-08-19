@@ -169,5 +169,5 @@ export type RawUser = BaseUser & {
 export type TweetOptions = {
     retweets: boolean
     replies: boolean
-    cookie?: string
+    cookie?: string | TwitterCookies
 }
