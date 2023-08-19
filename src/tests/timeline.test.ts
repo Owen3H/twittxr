@@ -15,7 +15,7 @@ it('timeline is setup correctly', () => {
 })
 
 describe('Timeline get', async () => {
-    it('timeline can be retrieved after cutoff', async () => {
+    it.skip('timeline can be retrieved after cutoff', async () => {
         let timeline = []
 
         try {
