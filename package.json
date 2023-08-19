@@ -10,6 +10,7 @@
     "default": "./dist/index.cjs"
   },
   "scripts": {
+    "test-dist": "node src/tests/test.js",
     "test": "vitest run --config ./vite.config.ts",
     "coverage": "vitest run --coverage",
     "clean": "npx rimraf dist",
