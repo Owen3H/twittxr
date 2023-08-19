@@ -101,7 +101,7 @@ export default class Timeline {
         username: string, 
         options: Partial<TweetOptions> = {}
     ) {
-        const showReplies = !options.cookie
+        const showReplies = (!options.cookie && options.replies) || (!options.replies && options.cookie)
         const endpoint = `${this.url}${username}?showReplies=${showReplies}`
 
         try {
