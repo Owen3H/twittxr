@@ -81,7 +81,7 @@ export default class Timeline {
      * 
      * **Default behaviour**
      * - Replies and retweets are not included.
-     * - No proxy or cookie is used.
+     * - No cookie is set - must be user defined.
      * 
      * @param username The user handle without the ``@``.
      * @param options The options to use with the request, see {@link TweetOptions}.
