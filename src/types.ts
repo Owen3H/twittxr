@@ -131,6 +131,7 @@ export type RawTimelineEntry = {
 }
 
 export type RawTimelineTweet = {
+    id_str: string,
     conversation_id_str: string
     text: string
     in_reply_to_name: string

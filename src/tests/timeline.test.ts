@@ -2,8 +2,8 @@
 import { Timeline, TimelineTweet } from '../classes/timeline.js'
 
 import { 
-    it, describe, 
-    expect, expectTypeOf, assertType
+    it, describe,
+    expect, expectTypeOf, assertType,
 } from 'vitest'
 
 it('timeline is setup correctly', () => {
@@ -15,11 +15,21 @@ it('timeline is setup correctly', () => {
 })
 
 describe('Timeline get', async () => {
-    it.skip('timeline can be retrieved successfully', async () => {
+    it('timeline can be retrieved after cutoff', async () => {
+        let timeline = []
 
-        // Expect not to be an error.
-        // Expect structure is valid.
-    
+        try {
+            timeline = await Timeline.get('elonmusk')
+        } catch(e) {
+            console.error(e)
+        } finally {
+            expect(timeline).toBeDefined()
+            assertType<TimelineTweet[]>(timeline)
+            expect(timeline.length).toBeGreaterThan(0)
+
+            const latestTweetDate = new Date(timeline[0].createdAt).getTime()
+            expect(latestTweetDate / 1000).toBeGreaterThan(1651363200)
+        }
     })
 
     it('can use puppeteer with no config', async () => {
@@ -28,9 +38,6 @@ describe('Timeline get', async () => {
         Timeline.disablePuppeteer()
 
         console.log(timeline[0])
-
-        expect(timeline).toBeDefined()
-        assertType<TimelineTweet[]>(timeline)
     })
 
     it('correctly gets matching tweets according to options', async () => {

@@ -97,9 +97,9 @@ export default class Timeline {
      */
     static async get(
         username: string, 
-        options: Partial<TweetOptions>
+        options: Partial<TweetOptions> = {}
     ) {
-        const showReplies = !options.replies && !!options.cookie
+        const showReplies = !options.cookie
         const endpoint = `${this.url}${username}?showReplies=${showReplies}`
 
         try {
@@ -125,7 +125,7 @@ export default class Timeline {
      * await Timeline.get('user').then(arr => arr[0])
      * ```
      */
-    static latest = (username: string, options: Partial<TweetOptions>) =>
+    static latest = (username: string, options: Partial<TweetOptions> = {}) =>
         Timeline.get(username, options).then(arr => arr[0])
 }
 
@@ -144,7 +144,7 @@ class TimelineTweet {
     readonly sensitive?: boolean
     
     constructor(data: RawTimelineTweet) {
-        this.id = data.conversation_id_str
+        this.id = data.id_str ?? data.conversation_id_str
         this.text = data.text
         this.createdAt = data.created_at
         this.link = domain + data.permalink
