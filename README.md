@@ -24,7 +24,7 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
-- NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
+- Replies endpoint is currently broken and `replies: true` will not return anything.
 
 ## Authentication
 Twitter is now known to require a cookie to return any data!<br>
@@ -63,17 +63,14 @@ const tweet = await Tweet.get('1674865731136020505')
 ```
 
 ### Get a user Timeline
-```js
-// Replies and retweets filtered out by default.
-const tweets = await Timeline.get('elonmusk')
-
-// You can pass certain options to override the default behaviour.
-const tweetsWithRts = await Timeline.get('elonmusk', {
-    replies: true, // This is the user's replies, not replies to their tweets.
-    retweets: false,
-    cookie: process.env.TWITTER_COOKIE,
+```ts
+// The retweets and replies default to false.
+const timelineWithRts = await Timeline.get('elonmusk', { 
+  cookie: process.env.TWITTER_COOKIE,
+  retweets: true,
+  replies: false, // This is the user's replies, not replies to their Tweets.
 })
-```
+``` 
 
 ### Using Puppeteer
 > **Note**
@@ -90,7 +87,9 @@ import { Timeline } from 'twittxr'
 ```js
 // Launches a basic headless browser & automatically closes the page.
 await Timeline.usePuppeteer()
-const tweets = await Timeline.get('elonmusk')
+const tweets = await Timeline.get('elonmusk', { 
+  cookie: process.env.TWITTER_COOKIE
+})
 ```
 </details>
 
@@ -107,7 +106,9 @@ const browser = await puppeteer.launch({ headless: true })
 
 // Creates a new page and closes it automatically after every .get() call
 await Timeline.usePuppeteer({ browser, autoClose: true })
-const tweets = await Timeline.get('elonmusk')
+const tweets = await Timeline.get('elonmusk', { 
+  cookie: process.env.TWITTER_COOKIE
+})
 ```
 </details>
 
@@ -121,7 +122,9 @@ const page = await browser.newPage()
 
 // Pass the page, but do not automatically close it.
 await Timeline.usePuppeteer({ page, autoClose: false })
-const tweets = await Timeline.get('elonmusk')
+const tweets = await Timeline.get('elonmusk', { 
+  cookie: process.env.TWITTER_COOKIE
+})
 
 await page.goto('https://google.com') // Continue to manipulate the page.
 await page.close() // Close the page manually.
