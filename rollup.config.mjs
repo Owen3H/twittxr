@@ -7,10 +7,15 @@ import pkg from './package.json' assert { type: 'json' }
 
 const common = {
 	input: 'src/index.ts',
-	external: ['undici-shim', 'tslib'],
-    plugins: [esbuild(), json(), 
+	external: [
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {})
+    ],
+    plugins: [
+        json(),
         resolve({ preferBuiltins: true }), 
-        commonjs({ requireReturnsDefault: 'auto' })
+        commonjs({ requireReturnsDefault: 'auto' }),
+        esbuild(),
     ],
 }
 

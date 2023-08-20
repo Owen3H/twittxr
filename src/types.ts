@@ -1,6 +1,35 @@
+import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Impossible<K extends keyof any> = {
+    [P in K]: never
+}
+
+export type Exact<T, U extends T = T> = 
+    U & Impossible<Exclude<keyof U, keyof T>>
+
 type DynamicProps<T> = {
     [key: string]: T
 }
+
+type DeepInfer<T> = {
+    [K in keyof T]: T[K]
+}
+
+type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
+export type PuppeteerConfig = LaunchOptions & {
+    browser?: Browser
+    page?: Page
+    autoClose?: boolean
+}
+
+export type TwitterCookies = Exact<{
+    guest_id?: string
+    auth_token: string
+    auth_multi?: string
+    ct0: string
+    kdt: string
+}>
 
 export type BaseUser = {
     name: string
@@ -102,8 +131,8 @@ export type RawTimelineEntry = {
 }
 
 export type RawTimelineTweet = {
+    id_str: string,
     conversation_id_str: string
-    id_str: string
     text: string
     in_reply_to_name: string
     created_at: string
@@ -140,6 +169,5 @@ export type RawUser = BaseUser & {
 export type TweetOptions = {
     retweets: boolean
     replies: boolean
-    cookie?: string
-    proxyUrl?: string
+    cookie?: string | TwitterCookies
 }

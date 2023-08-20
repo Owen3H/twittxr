@@ -19,6 +19,7 @@
         "@typescript-eslint/ban-ts-comment": "off",
         "semi": ["error", "never"],
         "no-unreachable": ["error"],
-        "no-unexpected-multiline": ["error"]
+        "no-unexpected-multiline": ["error"],
+        "prefer-const": "warn"
     }
 }

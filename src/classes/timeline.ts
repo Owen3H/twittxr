@@ -1,11 +1,15 @@
-const puppeteer = require('puppeteer-extra')
+import { 
+    buildCookieString, extractTimelineData, 
+    getPuppeteerContent, sendReq 
+} from "./util.js"
 
-import { extractTimelineData, getPuppeteerContent } from "./util.js"
 import { FetchError, ParseError } from "./errors.js"
 
 import User from "./user.js"
+import puppeteer from 'puppeteer'
 
 import { 
+    PuppeteerConfig,
     RawTimelineEntry,
     RawTimelineTweet, RawTimelineUser,
     TweetOptions, UserEntities 
@@ -15,53 +19,96 @@ const domain = 'https://twitter.com'
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
-    private static browser = null
-    get browser() {
-        return this.browser
+    private static puppeteer = {
+        use: false,
+        config: null
+    }
+
+    /**
+     * Use puppeteer to get the timeline, bypassing potential Cloudflare issues.
+     * Unless `browser` is defined in {@link config}, a basic headless one is used.
+     * 
+     * @param config Used to configure how Puppeteer should behave.
+     */
+    static async usePuppeteer(config?: PuppeteerConfig, asFallback = false) {
+        if (!this.puppeteer.use) return   
+        this.puppeteer.use = !asFallback
+
+        if (config) {
+            if (!config.browser) {
+                config.browser = await puppeteer.launch(config)
+            }
+
+            this.puppeteer.config = config
+            return
+        }
+        
+        // No config, set a headless one.
+        await this.setBasicBrowser()
+    }
+
+    static async disablePuppeteer() {
+        this.puppeteer.use = false
+    }
+
+    private static async setBasicBrowser() {
+        this.puppeteer.config = {
+            browser: await puppeteer.launch({ headless: 'new' }),
+            autoClose: true
+        }
     }
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
-        if (!this.browser) {
-            this.browser = await puppeteer.launch({ headless: 'new' })
-        }
+        const html = this.puppeteer.use
+            ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
+            : await sendReq(url, cookie).then(body => body.text()).catch(async err => {
+                // Can't fallback, re-throw original error.
+                if (!puppeteer) throw err
 
-        const html = await getPuppeteerContent(this.browser, url, cookie)
+                const config = this.puppeteer.config
+                if (!config.browser) await this.usePuppeteer(null, true)
+
+                return await getPuppeteerContent({ ...config, url, cookie })
+            })
+
         const data = extractTimelineData(html)
-    
-        if (!data) {
-            console.error(new ParseError('Script tag not found or JSON data missing.'))
-            return null
-        }
+        if (!data) throw new ParseError('Script tag not found or JSON data missing.')
     
         const timeline = JSON.parse(data)
         return timeline?.props?.pageProps?.timeline?.entries
     }
 
     /**
+     * Fetches all tweets by the specified user. 
      * 
-     * @param username The user handle without the ``@``. 
+     * **Default behaviour**
+     * - Replies and retweets are not included.
+     * - No cookie is set - must be user defined.
      * 
+     * @param username The user handle without the ``@``.
      * @param options The options to use with the request, see {@link TweetOptions}.
-     * * Example:
      * 
+     * Example:
      * ```js
-     * Timeline.get('elonmusk', { replies: true, retweets: false, cookie: process.env.TWITTER_COOKIE }
+     * await Timeline.get('elonmusk', { 
+     *ㅤㅤreplies: true, 
+     *ㅤㅤretweets: false, 
+     *ㅤㅤcookie: process.env.TWITTER_COOKIE 
+     * })
      * ```
      */
     static async get(
         username: string, 
-        options: Partial<TweetOptions> = {
-            proxyUrl: null,
-            cookie: null
-        }
+        options: Partial<TweetOptions> = {}
     ) {
-        const showReplies = !options.replies && !!options.cookie
-
-        const proxy = options.proxyUrl ?? ''
-        const endpoint = `${proxy}${this.url}${username}?showReplies=${showReplies}`
+        // Since `replies` could be `any` when compiled, check defined with !!
+        const endpoint = `${this.url}${username}?showReplies=${!!options.replies}`
 
         try {
-            const timeline = await this.#fetchUserTimeline(endpoint, options.cookie)
+            const parsedCookie = typeof options.cookie === 'string' 
+                ? options.cookie : buildCookieString(options.cookie)
+
+            const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
             const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
             const includeReplies = options.replies || false
@@ -75,8 +122,16 @@ export default class Timeline {
         }
     }
 
-    static at = (username: string, index: number) => this.get(username).then(arr => arr[index])
-    static latest = (username: string) => this.at(username, 0)
+    /**
+     * Works exactly the same as `.get()`, but just returns the most recent tweet.
+     * 
+     * Intended to be used as shorthand for the following:
+     * ```js
+     * await Timeline.get('user').then(arr => arr[0])
+     * ```
+     */
+    static latest = (username: string, options: Partial<TweetOptions> = {}) =>
+        Timeline.get(username, options).then(arr => arr[0])
 }
 
 class TimelineTweet {
@@ -94,7 +149,7 @@ class TimelineTweet {
     readonly sensitive?: boolean
     
     constructor(data: RawTimelineTweet) {
-        this.id = data.id_str
+        this.id = data.id_str ?? data.conversation_id_str
         this.text = data.text
         this.createdAt = data.created_at
         this.link = domain + data.permalink

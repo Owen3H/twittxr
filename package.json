@@ -1,16 +1,18 @@
 {
   "name": "twittxr",
   "version": "0.6.2",
-  "description": "Extract information from Twitter via the Syndication API without authentication.",
+  "description": "Extract information from Twitter using the Syndication API.",
   "type": "module",
+  "types": "./dist/index.d.ts",
   "exports": {
     "import": "./dist/index.js",
     "require": "./dist/index.cjs",
     "default": "./dist/index.cjs"
   },
-  "types": "./dist/index.d.ts",
   "scripts": {
+    "test-dist": "node src/tests/test.js",
     "test": "vitest run --config ./vite.config.ts",
+    "coverage": "vitest run --coverage",
     "clean": "npx rimraf dist",
     "build": "pnpm run clean && npx rollup -c && tsc --declaration true --emitDeclarationOnly",
     "lint": "eslint .",
@@ -27,7 +29,9 @@
     "api-wrapper",
     "twitter-api",
     "syndication",
-    "scraper"
+    "scraper",
+    "typescript",
+    "puppeteer"
   ],
   "author": "Owen3H",
   "license": "MIT",
@@ -36,13 +40,19 @@
   },
   "homepage": "https://github.com/Owen3H/twittxr#readme",
   "dependencies": {
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-adblocker": "^2.13.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "tslib": "latest",
-    "undici": "latest"
+    "undici-shim": "latest"
+  },
+  "peerDependencies": {
+    "puppeteer": ">=16"
+  },
+  "peerDependenciesMeta": {
+    "puppeteer": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "puppeteer": "latest",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",

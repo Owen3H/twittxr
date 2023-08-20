@@ -1,12 +1,9 @@
-import { request } from 'undici'
-import { FetchError, ParseError, HttpError } from './errors.js'
+import { request } from 'undici-shim'
+import { FetchError, ParseError, HttpError, ConfigError } from './errors.js'
+import { PuppeteerConfig, TwitterCookies } from '../types.js'
 
-const puppeteer = require('puppeteer-extra')
-
-const AdBlocker = require('puppeteer-extra-plugin-adblocker')
-const Stealth = require('puppeteer-extra-plugin-stealth')
-
-puppeteer.use(AdBlocker()).use(Stealth())
+const hasProp = (obj: unknown, name: string) =>
+    Object.prototype.hasOwnProperty.call(obj, name)
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
@@ -19,6 +16,23 @@ const headers = (cookie?: string) => {
     return obj
 }
 
+const buildCookieString = (cookies: TwitterCookies) => {
+    const obj = {
+        ...cookies,
+        dnt: 1,
+        des_opt_in: "N",
+        twtr_pixel_opt_in: "N",
+        at_check: true
+    }
+
+    let str = ""
+    Object.entries(obj).forEach(e => {
+        str += `${e[0]}=${e[1]}; `
+    })
+
+    return str.trimEnd()
+}
+
 /**
  * Sends a request to the API with a mock user agent, returning either the
  * response body or an {@link HttpError} including the status code.
@@ -26,28 +40,47 @@ const headers = (cookie?: string) => {
  */
 async function sendReq(url: string, cookie?: string) {
     const res = await request(url, { headers: headers(cookie) })
-
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
-    if (res.statusCode !== 200 && res.statusCode !== 304)
-        throw new HttpError('Server responded with an error!', res.statusCode)
 
-    return res.body
+    const code = res.statusCode
+    if (code !== 200 && code !== 304)
+        throw new HttpError(`Server responded with an error!\nStatus code: ${code}`, code)
+
+    // When running outside of Node, built-in fetch is used - therefore, 
+    // fallback to original response since `body` won't be defined.
+    return res.body ?? res
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function getPuppeteerContent(browser: any, url: string, cookie?: string) {
-    const page = await browser.newPage()
-    try {
-        await page.setExtraHTTPHeaders(headers(cookie))
-        await page.goto(url, { waitUntil: 'load' })
+/**
+ * Does the same as {@link sendReq} but grabs the page HTML response by
+ * using Puppeteer to navigate to the API endpoint.
+ * @internal
+ */
+async function getPuppeteerContent(config: PuppeteerConfig & { 
+    url: string,
+    cookie?: string
+}) {
+    const { browser, cookie, url } = config
+    let page = config?.page
 
+    try {
+        if (!page) {
+            if (browser) page = await browser.newPage()
+            else throw new ConfigError('Failed to use Puppeteer! Either `page` or `browser` need to be specified.') 
+        }
+
+        if (hasProp(page, 'setBypassCSP'))
+            await page.setBypassCSP(true)
+
+        if (hasProp(page, 'setExtraHTTPHeaders'))
+            await page.setExtraHTTPHeaders(headers(cookie))
+        
+        await page.goto(url, { waitUntil: 'load' })
         return await page.content()
     }
-    catch(e) {
-        console.error(e)
-    }
+    catch(e) { console.error(e) }
     finally {
-        await page.close()
+        if (config.autoClose) await page.close()
     }
 }
 
@@ -73,6 +106,7 @@ const extractTimelineData = (html: string) => {
 }
 
 export {
-    sendReq, getPuppeteerContent,
+    sendReq, buildCookieString,
+    getPuppeteerContent,
     extractTimelineData
 }
