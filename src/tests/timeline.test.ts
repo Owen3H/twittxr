@@ -15,6 +15,9 @@ it('timeline is setup correctly', () => {
 })
 
 describe('Timeline get', async () => {
+    const cookie = process.env.COOKIE_STRING
+    expect(cookie).toBeDefined()
+
     it.skip('timeline can be retrieved after cutoff', async () => {
         let timeline = []
 
@@ -42,28 +45,49 @@ describe('Timeline get', async () => {
         expect(timeline.length).toBeGreaterThan(0)
     })
 
-    it('correctly gets matching tweets according to options', async () => {
-        const timeline = await Timeline.get('elonmusk', {
-            replies: false, 
-            retweets: true 
+    describe('correctly gets matching tweets according to options', async () => {
+        it('includes retweets', async () => {
+            const timeline = await Timeline.get('elonmusk', {
+                replies: false, 
+                retweets: true,
+                cookie: process.env.COOKIE_STRING
+            })
+
+            expect(timeline).toBeDefined()
+            assertType<TimelineTweet[]>(timeline)
+            expect(timeline.length).toBeGreaterThan(0)
+
+            let count = timeline.length
+            timeline.forEach(twt => {
+                if (twt.isReply)
+                    count--
+            })
+    
+            expect.soft(count).toEqual(timeline.length)
         })
 
-        expect(timeline).toBeDefined()
-        assertType<TimelineTweet[]>(timeline)
+        it('includes replies', async () => {
+            const timeline = await Timeline.get('elonmusk', {
+                replies: true, 
+                retweets: false,
+                cookie: process.env.COOKIE_STRING
+            })
 
-        let count = timeline.length
-        timeline.forEach(twt => {
-            if (twt.isReply)
-                count--
+            expect(timeline).toBeDefined()
+            assertType<TimelineTweet[]>(timeline)
+            expect(timeline.length).toBeGreaterThan(0)
+
+            let count = timeline.length
+            timeline.forEach(twt => {
+                if (twt.isRetweet)
+                    count--
+            })
+    
+            expect.soft(count).toEqual(timeline.length)
         })
-
-        expect.soft(count).toEqual(timeline.length)
     })
     
     if (!process.env.GITHUB_ACTIONS) {
-        const cookie = process.env.COOKIE_STRING
-        expect(cookie).toBeDefined()
-
         it('includes nsfw/sensitive tweet(s)', async () => {
             let timeline = []
 

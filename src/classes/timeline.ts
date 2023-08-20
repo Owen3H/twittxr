@@ -101,8 +101,8 @@ export default class Timeline {
         username: string, 
         options: Partial<TweetOptions> = {}
     ) {
-        const showReplies = (!options.cookie && options.replies) || (!options.replies && options.cookie)
-        const endpoint = `${this.url}${username}?showReplies=${showReplies}`
+        // Since `replies` could be `any` when compiled, check defined with !!
+        const endpoint = `${this.url}${username}?showReplies=${!!options.replies}`
 
         try {
             const parsedCookie = typeof options.cookie === 'string' 

@@ -26,6 +26,20 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
 - NSFW/Sensitive content requires passing your session `Cookie` string via the `options` param.
 
+## Authentication
+Twitter is now known to require a cookie to return any data!<br>
+I strongly advise you pass the `cookie` parameter in all of your requests.
+
+***How do I get my session cookie?***
+1. [Click here](syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> Inspect Element
+2. Under 'Network' find the request with the `document` type.
+3. Find the header with the key `Cookie` and copy the whole string.
+4. Store this in an `.env` file like so:
+  
+    ```js
+    TWITTER_COOKIE="yourCookieStringHere"
+    ```
+
 ## Installation
 ```sh
 pnpm add twittxr
@@ -55,9 +69,9 @@ const tweets = await Timeline.get('elonmusk')
 
 // You can pass certain options to override the default behaviour.
 const tweetsWithRts = await Timeline.get('elonmusk', {
-    cookie: 'yourCookieString', // Necessary for sensitive tweets to be included.
     replies: true, // This is the user's replies, not replies to their tweets.
-    retweets: false
+    retweets: false,
+    cookie: process.env.TWITTER_COOKIE,
 })
 ```
 
@@ -118,3 +132,10 @@ To stop using Puppeteer at any point, you can simply call:
 ```js
 Timeline.disablePuppeteer()
 ```
+
+## Disclaimer
+By using this library, you must do so at your own discretion.<br>
+I will not be held accountable for any outcomes that may result from its usage, including and not limited to:
+- Banning/Suspension of your Twitter account.
+- Lawsuits, fines and other Twitter related legal disputes.
+- Hacking of network and/or account when providing a proxy.
