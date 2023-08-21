@@ -74,7 +74,7 @@ const timelineWithRts = await Timeline.get('elonmusk', {
 
 ### Using Puppeteer
 > **Note**
-> By default, Puppeteer will be used as a fallback for failed requests - if installed.
+> By default, Puppeteer will be used as a fallback for failed requests - if installed.<br>
 > However, it is possible to solely use Puppeteer by calling `await usePuppeteer()`.
 
 ```js
