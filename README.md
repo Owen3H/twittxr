@@ -31,7 +31,7 @@ Twitter is now known to require a cookie to return any data!<br>
 I strongly advise you pass the `cookie` parameter in all of your requests.
 
 ***How do I get my session cookie?***
-1. [Click here](syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> Inspect Element
+1. [Click here](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> Inspect Element
 2. Under 'Network' find the request with the `document` type.
 3. Find the header with the key `Cookie` and copy the whole string.
 4. Store this in an `.env` file like so:
