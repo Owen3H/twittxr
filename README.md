@@ -141,4 +141,4 @@ By using this library, you must do so at your own discretion.<br>
 I will not be held accountable for any outcomes that may result from its usage, including and not limited to:
 - Banning/Suspension of your Twitter account.
 - Lawsuits, fines and other Twitter related legal disputes.
-- Hacking of network and/or account when providing a proxy.
+- Hacking of network and/or account when providing a proxy or exposing cookies.
