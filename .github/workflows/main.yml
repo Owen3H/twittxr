@@ -3,10 +3,11 @@ on:
   push:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TWITTER_COOKIE: ${{ secrets.TWITTER_COOKIE }}
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -19,3 +20,4 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run ci
+    

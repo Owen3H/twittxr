@@ -4,9 +4,7 @@ import {
 } from "./util.js"
 
 import { FetchError, ParseError } from "./errors.js"
-
 import User from "./user.js"
-import puppeteer from 'puppeteer'
 
 import { 
     PuppeteerConfig,
@@ -36,6 +34,7 @@ export default class Timeline {
 
         if (config) {
             if (!config.browser) {
+                const puppeteer = await this.tryGetPuppeteer()
                 config.browser = await puppeteer.launch(config)
             }
 
@@ -52,10 +51,21 @@ export default class Timeline {
     }
 
     private static async setBasicBrowser() {
+        const puppeteer = this.tryGetPuppeteer()
         this.puppeteer.config = {
             browser: await puppeteer.launch({ headless: 'new' }),
             autoClose: true
         }
+    }
+
+    private static tryGetPuppeteer() {
+        const puppeteer = require('puppeteer')
+        if (!puppeteer) throw new ReferenceError(`
+            Puppeteer not found! Did you forget to install the peer dependency?
+            \nMake sure it exists in your node_modules directory before using Puppeteer.
+        `)
+
+        return puppeteer
     }
 
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
@@ -63,6 +73,7 @@ export default class Timeline {
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
             : await sendReq(url, cookie).then(body => body.text()).catch(async err => {
                 // Can't fallback, re-throw original error.
+                const puppeteer = require('puppeteer')
                 if (!puppeteer) throw err
 
                 const config = this.puppeteer.config

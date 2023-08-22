@@ -15,7 +15,7 @@ it('timeline is setup correctly', () => {
 })
 
 describe('Timeline get', async () => {
-    const cookie = process.env.COOKIE_STRING
+    const cookie = process.env.TWITTER_COOKIE
     expect(cookie).toBeDefined()
 
     it.skip('timeline can be retrieved after cutoff', async () => {
@@ -37,7 +37,7 @@ describe('Timeline get', async () => {
 
     it('can use puppeteer with no config', async () => {
         await Timeline.usePuppeteer()
-        const timeline = await Timeline.get('elonmusk', { cookie: process.env.COOKIE_STRING })
+        const timeline = await Timeline.get('elonmusk', { cookie })
         Timeline.disablePuppeteer()
 
         expect(timeline).toBeDefined()
@@ -50,7 +50,7 @@ describe('Timeline get', async () => {
             const timeline = await Timeline.get('elonmusk', {
                 replies: false, 
                 retweets: true,
-                cookie: process.env.COOKIE_STRING
+                cookie
             })
 
             expect(timeline).toBeDefined()
@@ -70,7 +70,7 @@ describe('Timeline get', async () => {
             const timeline = await Timeline.get('elonmusk', {
                 replies: true, 
                 retweets: false,
-                cookie: process.env.COOKIE_STRING
+                cookie
             })
 
             expect(timeline).toBeDefined()
