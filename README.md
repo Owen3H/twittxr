@@ -1,6 +1,6 @@
 <div align="left">
   <a href="https://twitter.com/elonmusk/status/1685096284275802112">
-    <img align="left" src="https://cdn.discordapp.com/attachments/966369739679080578/1137401149901779004/Twittxr.png" width="120">
+    <img align="left" src="https://media.discordapp.net/attachments/974491955864150046/1152050278779072562/Twittxr.png" width="120">
   </a>
   <h2>Twittxr</h2>
 </div>
