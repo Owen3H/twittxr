@@ -18,10 +18,9 @@ const domain = 'https://twitter.com'
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
-    private static puppeteer = {
-        use: false,
-        config: null
-    }
+    private static puppeteer: 
+        { use: boolean, config: PuppeteerConfig } = 
+        { use: false, config: null }
 
     /**
      * Use puppeteer to get the timeline, bypassing potential Cloudflare issues.
