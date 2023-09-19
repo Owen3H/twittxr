@@ -1,6 +1,6 @@
 {
   "name": "twittxr",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Extract information from Twitter using the Syndication API.",
   "type": "module",
   "types": "./dist/index.d.ts",
