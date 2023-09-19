@@ -3,19 +3,26 @@
         "module": "NodeNext",
         "target": "ES2017",
         "moduleResolution": "NodeNext",
+        "outDir": "dist",
+        "types": ["node"],
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
         "importHelpers": true,
         "allowJs": true,
         "esModuleInterop": true,
         "noEmitOnError": true,
+        "strictFunctionTypes": true,
         "baseUrl": ".",
         "paths": {
             "tslib" : ["node_modules/tslib/tslib.d.ts"]
-        },
-        "types": ["node"],
-        "outDir": "dist"
+        }
     },
     "include": ["src"],
-    "exclude": ["node_modules", "dist", "src/tests"]
+    "exclude": [
+        "node_modules", 
+        "dist", 
+        "src/tests", 
+        "vitest.config.ts",
+        "rollup.config.mjs"
+    ]
 }

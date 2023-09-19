@@ -17,7 +17,7 @@ type DeepInfer<T> = {
 }
 
 type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
-export type PuppeteerConfig = LaunchOptions & {
+export interface PuppeteerConfig extends LaunchOptions {
     browser?: Browser
     page?: Page
     autoClose?: boolean
@@ -37,12 +37,12 @@ export type BaseUser = {
     id_str: string
 }
 
-export type UserMention = BaseUser & {
+export interface UserMention extends BaseUser {
     id?: number
     indices: number[]
 }
 
-export type RawTimelineUser = BaseUser & {
+export interface RawTimelineUser extends BaseUser {
     blocking: boolean
     created_at: string
     default_profile: boolean
@@ -85,7 +85,7 @@ export type TweetEntities = {
     user_mentions: UserMention[]
 }
 
-export type TweetMedia = UrlEntity & {
+export interface TweetMedia extends UrlEntity {
     features: DynamicProps<[]>
     id_str: string
     media_url?: string
@@ -120,6 +120,16 @@ export type MediaSize = {
     w: number
     h: number
     resize: string
+}
+
+export type RawTimelineResponse = {
+    props: {
+        pageProps: {
+            timeline: {
+                entries: RawTimelineEntry[]
+            }
+        }
+    }
 }
 
 export type RawTimelineEntry = {
@@ -160,7 +170,7 @@ export type RawTweet = {
     user: RawUser
 }
 
-export type RawUser = BaseUser & {
+export interface RawUser extends BaseUser {
     is_blue_verified: boolean
     profile_image_url_https: string
     verified: boolean

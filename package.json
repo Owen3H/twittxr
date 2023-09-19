@@ -10,11 +10,13 @@
     "default": "./dist/index.cjs"
   },
   "scripts": {
+    "prepublishOnly": "pnpm run ci",
     "test-dist": "node src/tests/test.js",
-    "test": "vitest run --config ./vite.config.ts",
+    "test": "vitest run --config vitest.config.ts",
     "coverage": "vitest run --coverage",
     "clean": "npx rimraf dist",
-    "build": "pnpm run clean && npx rollup -c && tsc --declaration true --emitDeclarationOnly",
+    "build": "pnpm run clean && npx rollup -c && pnpm run dts",
+    "dts": "tsc --declaration true --emitDeclarationOnly true --declarationMap true",
     "lint": "eslint .",
     "ci": "pnpm run lint && pnpm run test && pnpm run build"
   },
@@ -68,6 +70,7 @@
     "vitest": "^0.34.1"
   },
   "files": [
+    "src",
     "dist",
     "LICENSE",
     "README.md",

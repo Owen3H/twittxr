@@ -9,6 +9,7 @@ import User from "./user.js"
 import { 
     PuppeteerConfig,
     RawTimelineEntry,
+    RawTimelineResponse,
     RawTimelineTweet, RawTimelineUser,
     TweetOptions, UserEntities 
 } from "../types.js"
@@ -85,7 +86,7 @@ export default class Timeline {
         const data = extractTimelineData(html)
         if (!data) throw new ParseError('Script tag not found or JSON data missing.')
     
-        const timeline = JSON.parse(data)
+        const timeline = JSON.parse(data) as RawTimelineResponse
         return timeline?.props?.pageProps?.timeline?.entries
     }
 
@@ -185,27 +186,27 @@ class TimelineTweet {
 }
 
 class TimelineUser extends User {
-    blocking: boolean
-    createdAt: string
-    defaultProfile: boolean
-    defaultProfileImage: boolean
-    description: string
-    entities: UserEntities
-    followersCount: number
-    friendsCount: number
-    statusesCount: number
-    likesCount: number
-    mediaCount: number
-    location: string
-    protected: boolean
-    url: string
-    time_zone: string
-    listedCount: number
-    utc_offset: number
-    notifications: boolean
-    following: boolean
-    followedBy: boolean
-    followRequestSent: boolean
+    readonly blocking: boolean
+    readonly createdAt: string
+    readonly defaultProfile: boolean
+    readonly defaultProfileImage: boolean
+    readonly description: string
+    readonly entities: UserEntities
+    readonly followersCount: number
+    readonly friendsCount: number
+    readonly statusesCount: number
+    readonly likesCount: number
+    readonly mediaCount: number
+    readonly location: string
+    readonly protected: boolean
+    readonly url: string
+    readonly time_zone: string
+    readonly listedCount: number
+    readonly utc_offset: number
+    readonly notifications: boolean
+    readonly following: boolean
+    readonly followedBy: boolean
+    readonly followRequestSent: boolean
 
     constructor(data: RawTimelineUser) {
         super(data)
