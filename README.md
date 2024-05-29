@@ -1,6 +1,6 @@
 <div align="left">
   <a href="https://twitter.com/elonmusk/status/1685096284275802112">
-    <img align="left" src="https://cdn.discordapp.com/attachments/974491955864150046/1152050278779072562/Twittxr.png?ex=660f50ee&is=65fcdbee&hm=2fd33e0fd326ec8469df3c13fa28991be7bec59cbfd2de6823136a84c0d1f533" width="120">
+    <img align="left" src="./icon.png" width="120">
   </a>
   <h2>Twittxr</h2>
 </div>
@@ -42,12 +42,12 @@ I strongly advise you pass the `cookie` parameter in all of your requests.
 
 ## Installation
 ```sh
-pnpm add twittxr
+bun add twittxr
 ```
 Optionally, you can install `puppeteer` >=16 to use as a fallback on failed requests.<br>
 This will avoid issues with Cloudflare, e.g. "403 Forbidden".
 ```sh
-pnpm add twittxr puppeteer
+bun add twittxr puppeteer
 ```
 
 ## Usage
