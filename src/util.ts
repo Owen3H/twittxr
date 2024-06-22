@@ -1,6 +1,7 @@
-import { request } from 'undici-shim'
-import { FetchError, ParseError, HttpError, ConfigError } from './errors.js'
-import { PuppeteerConfig, TwitterCookies } from '../types.js'
+import request from 'undici-shim'
+import type { PuppeteerConfig, TwitterCookies } from './types.js'
+
+import { FetchError, ParseError, HttpError, ConfigError } from './classes/errors.js'
 
 const hasProp = (obj: unknown, name: string) =>
     Object.prototype.hasOwnProperty.call(obj, name)

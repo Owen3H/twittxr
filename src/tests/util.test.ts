@@ -1,4 +1,4 @@
-import { buildCookieString } from '../classes/util.js'
+import { buildCookieString } from '../util.js'
 
 import { 
     it, describe, expect

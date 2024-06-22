@@ -1,5 +1,5 @@
-import { RawTweet, TweetEntities } from "../types.js"
-import { sendReq } from "./util.js"
+import type { RawTweet, TweetEntities } from "../types.js"
+import { sendReq } from "../util.js"
 
 import User from "./user.js"
 import { FetchError } from "./errors.js"
@@ -46,7 +46,7 @@ export default class Tweet {
 
     static async #fetchTweet(id: string) {
         try {
-            const data = await sendReq(this.url + id).then(body => body.json())
+            const data = await sendReq(this.url + id).then((res: any) => res.json())
             return data as RawTweet
         }
         catch (e: unknown) {

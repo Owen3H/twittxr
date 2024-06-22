@@ -16,12 +16,14 @@ it('Tweet is setup correctly', () => {
 
 it('single tweet can be retrieved successfully', async () => {
     const tweet = await Tweet.get('1674865731136020505')
+
+    expect(tweet).toBeTruthy()
     expect(tweet).toBeDefined()
     assertType<TweetEmbed>(tweet)
 })
 
-describe('Tweet get', () => {
-    it.skip('', () => {
+// describe('Tweet get', () => {
+//     it.skip('', () => {
 
-    })
-})
+//     })
+// })

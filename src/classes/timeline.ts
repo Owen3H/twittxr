@@ -1,12 +1,12 @@
 import { 
     buildCookieString, extractTimelineData, 
     getPuppeteerContent, sendReq 
-} from "./util.js"
+} from "../util.js"
 
 import { FetchError, ParseError } from "./errors.js"
 import User from "./user.js"
 
-import { 
+import type { 
     PuppeteerConfig,
     RawTimelineEntry,
     RawTimelineResponse,
@@ -14,13 +14,19 @@ import {
     TweetOptions, UserEntities 
 } from "../types.js"
 
-const domain = 'https://twitter.com'
+const domain = 'https://x.com'
+
+type PuppeteerOpts = { 
+    use: boolean, 
+    config: PuppeteerConfig 
+}
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
-    private static puppeteer: 
-        { use: boolean, config: PuppeteerConfig } = 
-        { use: false, config: null }
+    private static puppeteer: PuppeteerOpts = { 
+        use: false,
+        config: null
+    }
 
     /**
      * Use puppeteer to get the timeline, bypassing potential Cloudflare issues.
@@ -71,7 +77,7 @@ export default class Timeline {
     static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
         const html = this.puppeteer.use
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
-            : await sendReq(url, cookie).then(body => body.text()).catch(async err => {
+            : await sendReq(url, cookie).then((body: any) => body.text()).catch(async err => {
                 // Can't fallback, re-throw original error.
                 const puppeteer = require('puppeteer')
                 if (!puppeteer) throw err
@@ -83,7 +89,7 @@ export default class Timeline {
             })
 
         const data = extractTimelineData(html)
-        if (!data) throw new ParseError('Script tag not found or JSON data missing.')
+        if (!data) throw new ParseError('Script tag not found or JSON data is missing.')
     
         const timeline = JSON.parse(data) as RawTimelineResponse
         return timeline?.props?.pageProps?.timeline?.entries

@@ -1,25 +1,25 @@
-class ConfigError extends Error {
+export class ConfigError extends Error {
     constructor(message: string) {
         super(message)
         this.name = 'ConfigError'
     }
 }
 
-class FetchError extends Error {
+export class FetchError extends Error {
     constructor(message: string) {
         super(message)
         this.name = 'FetchError'
     }
 }
 
-class ParseError extends Error {
+export class ParseError extends Error {
     constructor(message: string) {
         super(message)
         this.name = 'ParseError'
     }
 }
 
-class HttpError extends Error {
+export class HttpError extends Error {
     code: number
     
     constructor(message: string, statusCode: number) {
@@ -27,11 +27,4 @@ class HttpError extends Error {
         this.name = 'HttpError'
         this.code = statusCode
     }
-}
-
-export {
-    FetchError,
-    ParseError,
-    HttpError,
-    ConfigError
 }

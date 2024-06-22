@@ -4,7 +4,7 @@ import Tweet from './classes/tweet.js'
 import { 
     sendReq,
     buildCookieString 
-} from './classes/util.js'
+} from './util.js'
 
 export {
     Timeline,

@@ -1,6 +1,6 @@
 {
   "name": "twittxr",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Extract information from Twitter using the Syndication API.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -10,15 +10,15 @@
     "default": "./dist/index.cjs"
   },
   "scripts": {
-    "prepublishOnly": "pnpm run ci",
+    "prepublishOnly": "bun run ci",
     "test-dist": "node src/tests/test.js",
     "test": "vitest run --config vitest.config.ts",
     "coverage": "vitest run --coverage",
-    "clean": "npx rimraf dist",
-    "build": "pnpm run clean && npx rollup -c && pnpm run dts",
+    "clean": "rimraf dist",
+    "build": "bun run clean && rollup -c && bun run dts",
     "dts": "tsc --declaration true --emitDeclarationOnly true --declarationMap true",
     "lint": "eslint .",
-    "ci": "pnpm run lint && pnpm run test && pnpm run build"
+    "ci": "bun run lint && bun run test && bun run build"
   },
   "repository": {
     "type": "git",

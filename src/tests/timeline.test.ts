@@ -53,14 +53,16 @@ describe('Timeline get', async () => {
                 cookie
             })
 
+            console.log(timeline)
+
+            expect(timeline).toBeTruthy()
             expect(timeline).toBeDefined()
             assertType<TimelineTweet[]>(timeline)
             expect(timeline.length).toBeGreaterThan(0)
 
             let count = timeline.length
-            timeline.forEach(twt => {
-                if (twt.isReply)
-                    count--
+            timeline.forEach(twt => { 
+                if (twt.isReply) count-- 
             })
     
             expect.soft(count).toEqual(timeline.length)
@@ -74,6 +76,7 @@ describe('Timeline get', async () => {
                 cookie
             })
 
+            expect(timeline).toBeTruthy()
             expect(timeline).toBeDefined()
             assertType<TimelineTweet[]>(timeline)
             expect(timeline.length).toBeGreaterThan(0)
