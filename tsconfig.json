@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "module": "NodeNext",
-        "target": "ES2017",
         "moduleResolution": "NodeNext",
+        "target": "ES2017",
         "outDir": "dist",
         "types": ["node"],
         "skipDefaultLibCheck": true,
@@ -13,6 +13,7 @@
         "noEmitOnError": true,
         "strictFunctionTypes": true,
         "baseUrl": ".",
+        "removeComments": true,
         "paths": {
             "tslib" : ["node_modules/tslib/tslib.d.ts"]
         }

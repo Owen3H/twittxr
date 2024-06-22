@@ -24,7 +24,6 @@ The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/scree
 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
-- Replies endpoint is currently broken and `replies: true` will not return anything.
 
 ## Authentication
 Twitter is now known to require a cookie to return any data!<br>
@@ -137,7 +136,8 @@ Timeline.disablePuppeteer()
 ```
 
 ## Disclaimer
-By using this library, you must do so at your own discretion.<br>
+You **must** use this library at your own discretion!
+
 I will not be held accountable for any outcomes that may result from its usage, including and not limited to:
 - Banning/Suspension of your Twitter account.
 - Lawsuits, fines and other Twitter related legal disputes.

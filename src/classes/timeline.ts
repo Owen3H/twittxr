@@ -119,7 +119,7 @@ export default class Timeline {
         options: Partial<TweetOptions> = {}
     ) {
         // Since `replies` could be `any` when compiled, check defined with !!
-        const endpoint = `${this.url}${username}?showReplies=${!!options.replies}`
+        const endpoint = `${this.url}${username}`
 
         try {
             const parsedCookie = typeof options.cookie === 'string' 
@@ -185,7 +185,7 @@ class TimelineTweet {
         return this.text.startsWith('RT @')
     }
 
-    get isReply() { 
+    get isReply() {
         return !!this.inReplyToName
     }
 }

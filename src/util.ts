@@ -27,9 +27,7 @@ const buildCookieString = (cookies: TwitterCookies) => {
     }
 
     let str = ""
-    Object.entries(obj).forEach(e => {
-        str += `${e[0]}=${e[1]}; `
-    })
+    Object.entries(obj).forEach(e => str += `${e[0]}=${e[1]}; `)
 
     return str.trimEnd()
 }

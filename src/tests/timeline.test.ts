@@ -18,28 +18,30 @@ describe('Timeline get', async () => {
     const cookie = process.env.TWITTER_COOKIE
     expect(cookie).toBeDefined()
 
-    it.skip('timeline can be retrieved after cutoff', async () => {
-        let timeline = []
+    // it.skip('timeline can be retrieved after cutoff', async () => {
+    //     let timeline = []
 
-        try {
-            timeline = await Timeline.get('elonmusk')
-        } catch(e) {
-            console.error(e)
-        } finally {
-            expect(timeline).toBeDefined()
-            assertType<TimelineTweet[]>(timeline)
-            expect(timeline.length).toBeGreaterThan(0)
+    //     try {
+    //         timeline = await Timeline.get('elonmusk')
+    //     } catch(e) {
+    //         console.error(e)
+    //     } finally {
+    //         expect(timeline).toBeTruthy()
+    //         expect(timeline).toBeDefined()
+    //         assertType<TimelineTweet[]>(timeline)
+    //         expect(timeline.length).toBeGreaterThan(0)
 
-            const latestTweetDate = new Date(timeline[0].createdAt).getTime()
-            expect(latestTweetDate / 1000).toBeGreaterThan(1651363200)
-        }
-    })
+    //         const latestTweetDate = new Date(timeline[0].createdAt).getTime()
+    //         expect(latestTweetDate / 1000).toBeGreaterThan(1651363200)
+    //     }
+    // })
 
     it('can use puppeteer with no config', async () => {
         await Timeline.usePuppeteer()
         const timeline = await Timeline.get('elonmusk', { cookie })
         Timeline.disablePuppeteer()
 
+        expect(timeline).toBeTruthy()
         expect(timeline).toBeDefined()
         assertType<TimelineTweet[]>(timeline)
         expect(timeline.length).toBeGreaterThan(0)
@@ -98,6 +100,7 @@ describe('Timeline get', async () => {
             try {
                 timeline = await Timeline.get('rileyreidx3', { cookie })
             } finally {
+                expect(timeline).toBeTruthy()
                 expect(timeline).toBeDefined()
                 assertType<TimelineTweet[]>(timeline)
                 expect(timeline.length).toBeGreaterThan(0)
