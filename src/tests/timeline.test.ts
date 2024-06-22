@@ -55,8 +55,6 @@ describe('Timeline get', async () => {
                 cookie
             })
 
-            console.log(timeline)
-
             expect(timeline).toBeTruthy()
             expect(timeline).toBeDefined()
             assertType<TimelineTweet[]>(timeline)

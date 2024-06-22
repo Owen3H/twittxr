@@ -54,20 +54,20 @@
     }
   },
   "devDependencies": {
-    "puppeteer": "latest",
-    "@rollup/plugin-commonjs": "^25.0.4",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.1.0",
-    "@types/node": "^20.4.5",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@typescript-eslint/parser": "^6.2.1",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.46.0",
-    "rimraf": "^5.0.1",
-    "rollup": "^3.28.0",
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/node": "^20.14.8",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "puppeteer": "^22.12.0",
+    "rimraf": "^5.0.7",
+    "rollup": "^3.29.4",
     "rollup-plugin-esbuild": "^5.0.0",
-    "typescript": "^5.1.6",
-    "vitest": "^0.34.1"
+    "typescript": "^5.5.2",
+    "vitest": "^0.34.6"
   },
   "files": [
     "src",
