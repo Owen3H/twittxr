@@ -1,19 +1,18 @@
-<div align="left">
-  <a href="https://twitter.com/elonmusk/status/1685096284275802112">
-    <img align="left" src="./icon.png" width="120">
-  </a>
-  <h2>Twittxr</h2>
-</div>
+# Twittxr <img align="left" width="132" height="132" src="./icon.png">
 
-A simple wrapper library around the Twitter Syndication API.<br>
+A simple wrapper library around the Twitter/X Syndication API.<br>
 Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3295160336cf41108ab4b409f6baf6c5)](https://app.codacy.com/gh/Owen3H/twittxr/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-![node-current](https://img.shields.io/node/v/twittxr)
+[![Build Status Badge](https://img.shields.io/github/actions/workflow/status/Owen3H/twittxr/main.yml)](https://github.com/Owen3H/twittxr/actions)
+[![Discord](https://img.shields.io/discord/1215213004824645674?logo=discord&logoColor=white&color=blue)](https://discord.gg/64Vq7cpdGV)
 
 ## About
 The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
 <br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
+
+As you may know, Twitter/X ended free access to its API, making [IFTTT](https://ifttt.com) and other services obsolete for many users.\
+This library was specifically made to combat this, so I could continue to send new Tweets to a discord channel :)
 
 #### ✅ Features
 - Can include retweets and/or replies by the user.
@@ -40,23 +39,23 @@ I strongly advise you pass the `cookie` parameter in all of your requests.
     ```
 
 ## Installation
-```sh
+```console
 bun add twittxr
 ```
 Optionally, you can install `puppeteer` >=16 to use as a fallback on failed requests.<br>
 This will avoid issues with Cloudflare, e.g. "403 Forbidden".
-```sh
+```console
 bun add twittxr puppeteer
 ```
 
 ## Usage
-```js
+```ts
 import { Timeline, Tweet } from 'twittxr' // ESM
 const { Timeline, Tweet } = require('twittxr') // CommonJS
 ```
 
 ### Get a single Tweet
-```js
+```ts
 // Does not return the same type as Timeline.get()
 const tweet = await Tweet.get('1674865731136020505')
 ```
