@@ -15,8 +15,8 @@ const common = {
         json(),
         resolve({ preferBuiltins: true }), 
         commonjs({ requireReturnsDefault: 'auto' }),
-        esbuild(),
-    ],
+        esbuild()
+    ]
 }
 
 const generatedCode = {

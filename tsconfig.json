@@ -18,11 +18,11 @@
             "tslib" : ["node_modules/tslib/tslib.d.ts"]
         }
     },
-    "include": ["src"],
+    "include": ["src", "tests"],
     "exclude": [
         "node_modules", 
         "dist", 
-        "src/tests", 
+        "tests", 
         "vitest.config.ts",
         "rollup.config.mjs"
     ]

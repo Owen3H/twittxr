@@ -1,10 +1,9 @@
-/* eslint-disable no-undef */
 import { 
-    it, describe, 
-    expect, expectTypeOf, assertType
+    it, expect,
+    expectTypeOf, assertType
 } from 'vitest'
 
-import { Tweet, TweetEmbed } from '../classes/tweet.js'
+import { Tweet, type TweetEmbed } from '../src/classes/tweet.js'
 
 it('Tweet is setup correctly', () => {
     expect(Tweet).toHaveProperty('get')

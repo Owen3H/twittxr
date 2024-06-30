@@ -1,7 +1,8 @@
-import { buildCookieString } from '../util.js'
+import { buildCookieString } from '../src/util.js'
 
 import { 
-    it, describe, expect
+    it, expect,
+    describe
 } from 'vitest'
 
 describe('util', () => {

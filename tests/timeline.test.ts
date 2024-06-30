@@ -1,9 +1,8 @@
-/* eslint-disable no-undef */
-import { Timeline, TimelineTweet } from '../classes/timeline.js'
+import { Timeline, type TimelineTweet } from '../src/classes/timeline.js'
 
 import { 
     it, describe,
-    expect, expectTypeOf, assertType,
+    expect, expectTypeOf, assertType
 } from 'vitest'
 
 it('timeline is setup correctly', () => {
