@@ -68,7 +68,8 @@
     "rollup": "^3.29.4",
     "rollup-plugin-esbuild": "^5.0.0",
     "typescript": "^5.5.2",
-    "vitest": "^0.34.6"
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "1.6.0"
   },
   "files": [
     "src",
