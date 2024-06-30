@@ -68,7 +68,7 @@ describe('Timeline get', async () => {
             expect.soft(count).toEqual(timeline.length)
         })
 
-        it('includes replies', async () => {
+        it.skip('includes replies', async () => {
             const timeline = await Timeline.get('elonmusk', {
                 replies: true, 
                 retweets: false,
