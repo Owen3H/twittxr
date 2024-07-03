@@ -7,7 +7,7 @@ Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 [![Build Status Badge](https://img.shields.io/github/actions/workflow/status/Owen3H/twittxr/main.yml)](https://github.com/Owen3H/twittxr/actions)
 [![Discord](https://img.shields.io/discord/1215213004824645674?logo=discord&logoColor=white&color=blue)](https://discord.gg/64Vq7cpdGV)
 
-## About
+## Overview
 The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
 <br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
@@ -18,7 +18,7 @@ This library was specifically made to combat this, so I could continue to send n
 - Can include retweets and/or replies by the user.
 - Option to pass cookie object or string to get **Sensitive/NSFW** Tweets.
 - Ability to pass a [Puppeteer](https://pptr.dev) page, bypassing potential API auth issues.
-- Fast response times thanks to [Undici](https://github.com/nodejs/undici).
+- Works in and out of **Node** by using the fast `request` method from **Undici**, falling back to native `fetch` in the browser.
 - Intuitive syntax and included type definitions.
 
 #### ❌ Limitations
@@ -29,9 +29,9 @@ Twitter is now known to require a cookie to return any data!<br>
 I strongly advise you pass the `cookie` parameter in all of your requests.
 
 ***How do I get my session cookie?***
-1. [Click here](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> Inspect Element
-2. Under 'Network' find the request with the `document` type.
-3. Find the header with the key `Cookie` and copy the whole string.
+1. [Click here](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> **Inspect Element**
+2. Refresh the page -> Select the **Network** tab -> Find the request with the `document` type.
+3. Under **Request Headers**, locate the key named `Cookie` and copy the whole string.
 4. Store this in an `.env` file like so:
   
     ```js
@@ -42,8 +42,10 @@ I strongly advise you pass the `cookie` parameter in all of your requests.
 ```console
 bun add twittxr
 ```
+
 Optionally, you can install `puppeteer` >=16 to use as a fallback on failed requests.<br>
-This will avoid issues with Cloudflare, e.g. "403 Forbidden".
+This can potentially avoid issues with Cloudflare. Ex: "403 Forbidden".
+
 ```console
 bun add twittxr puppeteer
 ```
@@ -135,9 +137,8 @@ Timeline.disablePuppeteer()
 ```
 
 ## Disclaimer
-You **must** use this library at your own discretion!
-
+You **must** use this library at your own discretion!\
 I will not be held accountable for any outcomes that may result from its usage, including and not limited to:
-- Banning/Suspension of your Twitter account.
-- Lawsuits, fines and other Twitter related legal disputes.
+- Banning/Suspension of your Twitter/X account.
+- Lawsuits, fines and other Twitter/X related legal disputes.
 - Hacking of network and/or account when providing a proxy or exposing cookies.
