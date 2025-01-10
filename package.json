@@ -1,7 +1,28 @@
 {
   "name": "twittxr",
-  "version": "0.7.2",
   "description": "Extract information from Twitter using the Syndication API.",
+  "version": "0.7.2",
+  "author": "Owen3H",
+  "license": "MIT",
+  "homepage": "https://github.com/Owen3H/twittxr#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Owen3H/twittxr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Owen3H/twittxr/issues"
+  },
+  "keywords": [
+    "twitter",
+    "tweet",
+    "xdotcom",
+    "api-wrapper",
+    "twitter-api",
+    "syndication",
+    "scraper",
+    "typescript",
+    "puppeteer"
+  ],
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -20,33 +41,16 @@
     "lint": "eslint .",
     "ci": "bun run lint && bun run test && bun run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Owen3H/twittxr.git"
-  },
-  "keywords": [
-    "twitter",
-    "tweet",
-    "xdotcom",
-    "api-wrapper",
-    "twitter-api",
-    "syndication",
-    "scraper",
-    "typescript",
-    "puppeteer"
+  "files": [
+    "src",
+    "dist",
+    "LICENSE",
+    "README.md",
+    "package.json"
   ],
-  "author": "Owen3H",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Owen3H/twittxr/issues"
-  },
-  "homepage": "https://github.com/Owen3H/twittxr#readme",
   "dependencies": {
     "tslib": "latest",
     "undici-shim": "latest"
-  },
-  "peerDependencies": {
-    "puppeteer": ">=16"
   },
   "peerDependenciesMeta": {
     "puppeteer": {
@@ -60,24 +64,17 @@
     "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "eslint": "^8.57.0",
     "eslint-plugin-named-import-spacing": "^1.0.3",
     "puppeteer": "^22.12.0",
-    "rimraf": "^5.0.7",
+    "rimraf": "^6.0.1",
     "rollup": "^3.29.4",
     "rollup-plugin-esbuild": "^5.0.0",
     "typescript": "^5.5.2",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "1.6.0"
+    "vitest": "2.1.8"
   },
-  "files": [
-    "src",
-    "dist",
-    "LICENSE",
-    "README.md",
-    "package.json"
-  ],
   "engines": {
     "node": ">=10"
   }

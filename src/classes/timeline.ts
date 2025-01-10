@@ -17,14 +17,14 @@ import type {
 const domain = 'https://x.com'
 
 type PuppeteerOpts = { 
-    use: boolean, 
+    use: 'always' | 'fallback' | 'never', 
     config: PuppeteerConfig 
 }
 
 export default class Timeline {
     static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
     private static puppeteer: PuppeteerOpts = { 
-        use: false,
+        use: 'never',
         config: null
     }
 
@@ -35,37 +35,35 @@ export default class Timeline {
      * @param config Used to configure how Puppeteer should behave.
      */
     static async usePuppeteer(config?: PuppeteerConfig, asFallback = false) {
-        if (!this.puppeteer.use) return   
-        this.puppeteer.use = !asFallback
+        //if (!this.puppeteer.use) return
+        this.puppeteer.use = asFallback ? 'fallback' : 'always'
 
-        if (config) {
-            if (!config.browser) {
-                const puppeteer = await this.tryGetPuppeteer()
-                config.browser = await puppeteer.launch(config)
-            }
-
-            this.puppeteer.config = config
-            return
+        if (!config) {
+            return await this.setBasicBrowser()
         }
-        
-        // No config, set a headless one.
-        await this.setBasicBrowser()
+
+        if (!config.browser) {
+            const puppeteer = await this.tryGetPuppeteer()
+            config.browser = await puppeteer.launch(config)
+        }
+
+        this.puppeteer.config = config
     }
 
     static async disablePuppeteer() {
-        this.puppeteer.use = false
+        this.puppeteer.use = 'never'
     }
 
     private static async setBasicBrowser() {
-        const puppeteer = this.tryGetPuppeteer()
+        const puppeteer = await this.tryGetPuppeteer()
         this.puppeteer.config = {
-            browser: await puppeteer.launch({ headless: 'new' }),
+            browser: await puppeteer.launch({ headless: 'shell' }),
             autoClose: true
         }
     }
 
-    private static tryGetPuppeteer() {
-        const puppeteer = require('puppeteer')
+    private static async tryGetPuppeteer() {
+        const puppeteer = await import('puppeteer')
         if (!puppeteer) throw new ReferenceError(`
             Puppeteer not found! Did you forget to install the peer dependency?
             \nMake sure it exists in your node_modules directory before using Puppeteer.
@@ -79,13 +77,16 @@ export default class Timeline {
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
             : await sendReq(url, cookie).then((body: any) => body.text()).catch(async err => {
                 // Can't fallback, re-throw original error.
-                const puppeteer = require('puppeteer')
+                const puppeteer = await import('puppeteer')
                 if (!puppeteer) throw err
 
                 const config = this.puppeteer.config
                 if (!config.browser) await this.usePuppeteer(null, true)
 
-                return await getPuppeteerContent({ ...config, url, cookie })
+                const content = await getPuppeteerContent({ ...config, url, cookie })
+                console.log(content)
+                
+                return content
             })
 
         const data = extractTimelineData(html)

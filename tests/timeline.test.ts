@@ -46,9 +46,9 @@ describe('Timeline get', async () => {
         expect(timeline.length).toBeGreaterThan(0)
     })
 
+    // TODO: Investigate why these fail.
     describe('correctly gets matching tweets according to options', async () => {
-        // TODO: Investigate retweets failing on GH
-        it.skip('includes retweets', async () => {
+        it('includes retweets', async () => {
             const timeline = await Timeline.get('elonmusk', {
                 replies: false, 
                 retweets: true,
@@ -68,7 +68,7 @@ describe('Timeline get', async () => {
             expect.soft(count).toEqual(timeline.length)
         })
 
-        it.skip('includes replies', async () => {
+        it('includes replies', async () => {
             const timeline = await Timeline.get('elonmusk', {
                 replies: true, 
                 retweets: false,
@@ -91,13 +91,15 @@ describe('Timeline get', async () => {
     })
     
     if (!process.env.GITHUB_ACTIONS) {
+        // TODO: Investigate why an empty array is returned when using a valid cookie.
         it('includes nsfw/sensitive tweet(s)', async () => {
             let timeline = []
 
             try {
                 timeline = await Timeline.get('rileyreidx3', { cookie })
+            } catch(e) {
+               console.error(e) 
             } finally {
-                expect(timeline).toBeTruthy()
                 expect(timeline).toBeDefined()
                 assertType<TimelineTweet[]>(timeline)
                 expect(timeline.length).toBeGreaterThan(0)
