@@ -15,7 +15,7 @@ it('timeline is setup correctly', () => {
 
 describe('Timeline get', async () => {
     const cookie = process.env.TWITTER_COOKIE
-    expect(cookie).toBeDefined()
+    expect(cookie).toBeTruthy()
 
     // it.skip('timeline can be retrieved after cutoff', async () => {
     //     let timeline = []

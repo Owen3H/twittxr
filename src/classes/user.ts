@@ -1,4 +1,4 @@
-import type { RawUser } from "../types.js"
+import type { RawUser, ProfileImageShape } from "../types.js"
 
 export default class User {
     readonly id: string
@@ -7,6 +7,7 @@ export default class User {
     readonly profileImageUrl: string
     readonly screenName: string
     readonly verified: boolean
+    readonly profileImageShape: ProfileImageShape
 
     constructor(data: RawUser) {
         this.id = data.id_str
@@ -15,6 +16,7 @@ export default class User {
         this.profileImageUrl = data.profile_image_url_https
         this.screenName = data.screen_name
         this.verified = data.verified
+        this.profileImageShape = data.profile_image_shape
     }
 }
 

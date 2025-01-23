@@ -42,11 +42,12 @@ class TweetEmbed {
 }
 
 export default class Tweet {
-    static readonly url = 'https://cdn.syndication.twimg.com/tweet-result?id='
+    static readonly url = 'https://cdn.syndication.twimg.com/tweet-result?'
 
-    static async #fetchTweet(id: string) {
+    // TODO: This now requires a token param along with id.
+    static async #fetchTweet(id: string, token: string) {
         try {
-            const data = await sendReq(this.url + id).then((res: any) => res.json())
+            const data = await sendReq(`${this.url}id=${id}&token=${token}`).then((res: any) => res.json())
             return data as RawTweet
         }
         catch (e: unknown) {
@@ -56,8 +57,17 @@ export default class Tweet {
         }
     }
 
-    static async get(id: string | number) {
-        const tweet = await this.#fetchTweet(id.toString())
+    /**
+     * Gets a {@link RawTweet} by its ID and returns a {@link TweetEmbed}.
+     * 
+     * **A TOKEN IS REQUIRED!** You can find this token by heading to [this link](https://cdn.syndication.twimg.com/tweet-result?id=187706281200388554)
+     * while logged in, and noting down the value of the `token` parameter in the URL.
+     * 
+     * @param id The ID of the tweet to fetch.
+     * @param token Token required to fetch this tweet. 
+     */
+    static async get(id: string | number, token: string) {
+        const tweet = await this.#fetchTweet(id.toString(), token)
         return new TweetEmbed(tweet)
     }
 }

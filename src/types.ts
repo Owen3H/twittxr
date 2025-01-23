@@ -76,7 +76,7 @@ export interface RawTimelineUser extends BaseUser {
     //highlightedLabel: any
     translator_type: string
     withheld_scope: string
-    //withheld_in_countries: any[]
+    withheld_in_countries: any[] // Not sure of exact type yet, likely string?
     notificiations: boolean
     show_all_inline_media: boolean
 }
@@ -185,14 +185,21 @@ export type RawTweet = {
     user: RawUser
 }
 
+export type ProfileImageShape = 'Circle' | 'Square'
+
 export interface RawUser extends BaseUser {
     is_blue_verified: boolean
     profile_image_url_https: string
+    profile_image_shape?: ProfileImageShape
     verified: boolean
 }
 
 export type TweetOptions = {
     retweets: boolean
     replies: boolean
+}
+
+export type AuthOptions = {
     cookie?: string | TwitterCookies
+    token: string
 }
