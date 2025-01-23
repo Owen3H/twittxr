@@ -44,7 +44,6 @@ class TweetEmbed {
 export default class Tweet {
     static readonly url = 'https://cdn.syndication.twimg.com/tweet-result?'
 
-    // TODO: This now requires a token param along with id.
     static async #fetchTweet(id: string, token: string) {
         try {
             const data = await sendReq(`${this.url}id=${id}&token=${token}`).then((res: any) => res.json())

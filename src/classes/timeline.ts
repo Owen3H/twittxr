@@ -7,6 +7,7 @@ import { FetchError, ParseError } from "./errors.js"
 import User from "./user.js"
 
 import type { 
+    AuthOptions,
     PuppeteerConfig,
     RawTimelineEntry,
     RawTimelineResponse,
@@ -105,6 +106,7 @@ export default class Timeline {
      * 
      * @param username The user handle without the ``@``.
      * @param options The options to use with the request, see {@link TweetOptions}.
+     * @param auth The auth to use with the request, a token may be required! See {@link AuthOptions}.
      * 
      * Example:
      * ```js
@@ -117,16 +119,21 @@ export default class Timeline {
      */
     static async get(
         username: string, 
-        options: Partial<TweetOptions> = {}
+        options: Partial<TweetOptions> = {},
+        auth: AuthOptions
     ) {
         // Since `replies` could be `any` when compiled, check defined with !!
         const endpoint = `${this.url}${username}`
 
         try {
-            const parsedCookie = typeof options.cookie === 'string' 
-                ? options.cookie : buildCookieString(options.cookie)
+            const parsedCookie = typeof auth.cookie === 'string' 
+                ? auth.cookie : buildCookieString(auth.cookie)
 
             const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
+
+            if (username == "rileyreidx3") 
+                console.log(timeline)
+
             const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
             const includeReplies = options.replies || false
@@ -148,8 +155,8 @@ export default class Timeline {
      * await Timeline.get('user').then(arr => arr[0])
      * ```
      */
-    static latest = (username: string, options: Partial<TweetOptions> = {}) =>
-        Timeline.get(username, options).then(arr => arr[0])
+    static latest = (username: string, options: Partial<TweetOptions> = {}, auth: AuthOptions) =>
+        Timeline.get(username, options, auth).then(arr => arr[0])
 }
 
 class TimelineTweet {
@@ -177,9 +184,13 @@ class TimelineTweet {
         this.likeCount = data.favorite_count
         this.sensitive = data.possibly_sensitive ?? false
 
-        if (data.user) this.user = new TimelineUser(data.user)
-        if (data.in_reply_to_name)
+        if (data.user) {
+            this.user = new TimelineUser(data.user)
+        }
+
+        if (data.in_reply_to_name) {
             this.inReplyToName = data.in_reply_to_name
+        }
     }
 
     get isRetweet() {
