@@ -41,10 +41,10 @@ class TweetEmbed {
     }
 }
 
-// Grabbed from react-tweet. Dont ask me how tf this works.
-const getTokenFromID = (id: string | number) => {
-    const magicNum = (Number(id) / 1e15) * Math.PI
-    return magicNum.toString(6 ** 2).replace(/(0+|\.)/g, '')
+// Grabbed from react-tweet. <3
+const getTokenFromID = (id: string | number) => (Number(id) / 1e15) * Math.PI
+    .toString(36) // Base 36 (a-z, 0-9)
+    .replace(/(0+|\.)/g, '') // Strip trailing zeros.
 }
 
 const SYNDICATION_TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
