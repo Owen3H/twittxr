@@ -41,12 +41,19 @@ class TweetEmbed {
     }
 }
 
-export default class Tweet {
-    static readonly url = 'https://cdn.syndication.twimg.com/tweet-result?'
+// Magic idek. Grabbed from react-tweet.
+const getTokenFromID = (id: string | number) => {
+    return ((Number(id) / 1e15) * Math.PI).toString(6 ** 2).replace(/(0+|\.)/g, '')
+}
 
-    static async #fetchTweet(id: string, token: string) {
+const SYNDICATION_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
+
+export default class Tweet {
+    static async #fetchTweet(id: string) {
         try {
-            const data = await sendReq(`${this.url}id=${id}&token=${token}`).then((res: any) => res.json())
+            const url = `${SYNDICATION_URL}id=${id}&token=${getTokenFromID(id)}&dnt=1`
+            const data = await sendReq(url).then((res: any) => res.json())
+            
             return data as RawTweet
         }
         catch (e: unknown) {
@@ -59,18 +66,19 @@ export default class Tweet {
     /**
      * Gets a {@link RawTweet} by its ID and returns a {@link TweetEmbed}.
      * 
-     * **A TOKEN IS REQUIRED!** You can find this token by doing the following:
-     * 1. Opening **Inspect Element** -> **Network Requests**.
-     * 2. Heading to [this link](https://platform.twitter.com/embed/Tweet.html?dnt=false&id=1877062812003885543) while logged in.
-     * 3. Find the `tweet-result` request and copy the value of the `token` key under the **Payload** tab.
-     * 
      * @param id The ID of the tweet to fetch.
      * @param token Token required to fetch this tweet. 
      */
-    static async get(id: string | number, token: string) {
-        const tweet = await this.#fetchTweet(id.toString(), token)
+    static async get(id: string | number) {
+        const tweet = await this.#fetchTweet(id.toString())
         return new TweetEmbed(tweet)
     }
+
+    // Bring back when we can no longer get token from ID.
+    //  * **A TOKEN IS REQUIRED!** You can find this token by doing the following:
+    //  * 1. Opening **Inspect Element** -> **Network Requests**.
+    //  * 2. Heading to [this link](https://platform.twitter.com/embed/Tweet.html?dnt=false&id=1877062812003885543) while logged in.
+    //  * 3. Find the `tweet-result` request and copy the value of the `token` key under the **Payload** tab.
 }
 
 export {

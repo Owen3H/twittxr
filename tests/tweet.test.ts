@@ -9,12 +9,12 @@ it('Tweet class is setup correctly', () => {
     expect(Tweet).toHaveProperty('get')
     expectTypeOf(Tweet.get).toBeFunction()
 
-    expectTypeOf(Tweet.get).toBeCallableWith('1688091377823895552', 'sometoken')
-    expectTypeOf(Tweet.get).toBeCallableWith(1688091377823895552, 'sometoken')
+    expectTypeOf(Tweet.get).toBeCallableWith('1688091377823895552')
+    expectTypeOf(Tweet.get).toBeCallableWith(1688091377823895552)
 })
 
-it('single tweet can be retrieved successfully (with token)', async () => {
-    const tweet = await Tweet.get('1674865731136020505', process.env.TWITTER_TWEET_TOKEN)
+it('single tweet can be retrieved successfully', async () => {
+    const tweet = await Tweet.get('1674865731136020505')
 
     expect(tweet).toBeTruthy()
     expect(tweet).toBeDefined()
