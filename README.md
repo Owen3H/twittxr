@@ -23,7 +23,6 @@ which is used by embedded widgets, though there are some notable limitations by 
 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
-- When getting a single Tweet by ID, a token is required. The `Tweet.get` method will guide you on how to get this.
 
 ## Authentication
 Twitter is now known to require a cookie to return any data!<br>
