@@ -41,19 +41,21 @@ class TweetEmbed {
     }
 }
 
-// Magic idek. Grabbed from react-tweet.
+// Grabbed from react-tweet. Dont ask me how tf this works.
 const getTokenFromID = (id: string | number) => {
-    return ((Number(id) / 1e15) * Math.PI).toString(6 ** 2).replace(/(0+|\.)/g, '')
+    const magicNum = (Number(id) / 1e15) * Math.PI
+    return magicNum.toString(6 ** 2).replace(/(0+|\.)/g, '')
 }
 
-const SYNDICATION_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
+const SYNDICATION_TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
 
 export default class Tweet {
     static async #fetchTweet(id: string) {
         try {
-            const url = `${SYNDICATION_URL}id=${id}&token=${getTokenFromID(id)}&dnt=1`
+            const token = getTokenFromID(id)
+            const url = `${SYNDICATION_TWEET_URL}id=${id}&token=${token}&dnt=1`
+
             const data = await sendReq(url).then((res: any) => res.json())
-            
             return data as RawTweet
         }
         catch (e: unknown) {
