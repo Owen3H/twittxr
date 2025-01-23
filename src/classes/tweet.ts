@@ -59,8 +59,10 @@ export default class Tweet {
     /**
      * Gets a {@link RawTweet} by its ID and returns a {@link TweetEmbed}.
      * 
-     * **A TOKEN IS REQUIRED!** You can find this token by heading to [this link](https://cdn.syndication.twimg.com/tweet-result?id=187706281200388554)
-     * while logged in, and noting down the value of the `token` parameter in the URL.
+     * **A TOKEN IS REQUIRED!** You can find this token by doing the following:
+     * 1. Opening **Inspect Element** -> **Network Requests**.
+     * 2. Heading to [this link](https://platform.twitter.com/embed/Tweet.html?dnt=false&id=1877062812003885543) while logged in.
+     * 3. Find the `tweet-result` request and copy the value of the `token` key under the **Payload** tab.
      * 
      * @param id The ID of the tweet to fetch.
      * @param token Token required to fetch this tweet. 
