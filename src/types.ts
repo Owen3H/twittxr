@@ -17,6 +17,7 @@ type DeepInfer<T> = {
 }
 
 type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
+
 export interface PuppeteerConfig extends LaunchOptions {
     browser?: Browser
     page?: Page
@@ -70,6 +71,14 @@ export interface RawTimelineUser extends BaseUser {
     entities?: UserEntities
     utc_offset: number
     time_zone: string
+    has_custom_timelines: boolean
+    is_translator: boolean
+    //highlightedLabel: any
+    translator_type: string
+    withheld_scope: string
+    //withheld_in_countries: any[]
+    notificiations: boolean
+    show_all_inline_media: boolean
 }
 
 export type UserEntities = {
@@ -141,22 +150,28 @@ export type RawTimelineEntry = {
 }
 
 export type RawTimelineTweet = {
-    id_str: string,
+    id: number
+    id_str: string
     conversation_id_str: string
     text: string
-    in_reply_to_name: string
+    full_text: string
+    display_text_range: number[]
+    in_reply_to_name?: string
     created_at: string
     permalink: string
     reply_count: number
     quote_count: number
     retweet_count: number
     favorite_count: number
+    favorited: boolean
+    retweeted: boolean
     user: RawTimelineUser
     possibly_sensitive?: boolean
+    retweeted_status?: RawTimelineTweet
+    entities?: Partial<TweetEntities>
+    extended_entities?: Partial<TweetEntities>
     lang: string
     location: string
-    retweeted_status?: RawTimelineTweet
-    entities?: Partial<TweetEntities> 
 }
 
 export type RawTweet = {
