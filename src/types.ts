@@ -201,5 +201,5 @@ export type TweetOptions = {
 
 export type AuthOptions = {
     cookie?: string | TwitterCookies
-    token: string
+    //token: string // TODO: If timeline doesn't need this, we can just remove it as Tweet.get already requires it.
 }
