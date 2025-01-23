@@ -85,7 +85,7 @@ export default class Timeline {
                 if (!config.browser) await this.usePuppeteer(null, true)
 
                 const content = await getPuppeteerContent({ ...config, url, cookie })
-                console.log(content)
+                //console.log(content)
                 
                 return content
             })
@@ -131,8 +131,9 @@ export default class Timeline {
 
             const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
 
-            if (username == "rileyreidx3") 
-                console.log(timeline)
+            // TEMPORARY DEBUGGING
+            // if (username == "rileyreidx3") 
+            //     console.log(timeline)
 
             const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
