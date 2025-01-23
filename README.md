@@ -8,11 +8,11 @@ Inspired by: https://github.com/zedeus/nitter/issues/919#issuecomment-1616703690
 [![Discord](https://img.shields.io/discord/1215213004824645674?logo=discord&logoColor=white&color=blue)](https://discord.gg/64Vq7cpdGV)
 
 ## Overview
-The [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) is what is used by embedded widgets and its ease-of-use brings some notable limitations.
-<br> **Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
+As you may know, Twitter/X ended free access to its API, making [IFTTT](https://ifttt.com) and other services obsolete for many users.
+Instead, this wrapper aims to use the public facing [Syndication API](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk)
+which is used by embedded widgets, though there are some notable limitations by using it as an "alternative".
 
-As you may know, Twitter/X ended free access to its API, making [IFTTT](https://ifttt.com) and other services obsolete for many users.\
-This library was specifically made to combat this, so I could continue to send new Tweets to a discord channel :)
+**Twittxr** is best suited for setting up a user feed or getting a single tweet, it will not replace a fully fledged scraper/client.
 
 #### ✅ Features
 - Can include retweets and/or replies by the user.
@@ -23,6 +23,7 @@ This library was specifically made to combat this, so I could continue to send n
 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
+- When getting a single Tweet by ID, a token is required. The `Tweet.get` method will guide you on how to get this.
 
 ## Authentication
 Twitter is now known to require a cookie to return any data!<br>
