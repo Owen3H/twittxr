@@ -30,7 +30,8 @@ const esm = {
     output: {
         generatedCode,
         file: pkg.exports.import,
-        format: 'es'
+        format: 'es',
+        inlineDynamicImports: true
     }
 }
 
@@ -39,7 +40,8 @@ const cjs = {
     output: {
         generatedCode,
         file: pkg.exports.require,
-        format: 'cjs'
+        format: 'cjs',
+        inlineDynamicImports: true
     }
 }
 

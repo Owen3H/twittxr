@@ -85,7 +85,7 @@ export default class Timeline {
                 if (!config.browser) await this.usePuppeteer(null, true)
 
                 const content = await getPuppeteerContent({ ...config, url, cookie })
-                console.log(content)
+                //console.log(content)
                 
                 return content
             })
@@ -105,34 +105,28 @@ export default class Timeline {
      * - No cookie is set - must be user defined.
      * 
      * @param username The user handle without the ``@``.
-     * @param options The options to use with the request, see {@link TweetOptions}.
      * @param auth The auth to use with the request, a token may be required! See {@link AuthOptions}.
+     * @param options The options to use with the request, see {@link TweetOptions}.
      * 
      * Example:
      * ```js
-     * await Timeline.get('elonmusk', { 
+     * await Timeline.get('elonmusk', { cookie: process.env.TWITTER_COOKIE }, { 
      *ㅤㅤreplies: true, 
      *ㅤㅤretweets: false, 
-     *ㅤㅤcookie: process.env.TWITTER_COOKIE 
      * })
      * ```
      */
-    static async get(
-        username: string, 
-        options: Partial<TweetOptions> = {},
-        auth: AuthOptions
-    ) {
+    static async get(username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) {
         // Since `replies` could be `any` when compiled, check defined with !!
         const endpoint = `${this.url}${username}`
 
         try {
-            const parsedCookie = typeof auth.cookie === 'string' 
-                ? auth.cookie : buildCookieString(auth.cookie)
-
+            const parsedCookie = typeof auth.cookie === 'string' ? auth.cookie : buildCookieString(auth.cookie)
             const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
 
-            if (username == "rileyreidx3") 
-                console.log(timeline)
+            // TEMPORARY DEBUGGING
+            // if (username == "rileyreidx3") 
+            //     console.log(timeline)
 
             const tweets = timeline.map(e => new TimelineTweet(e.content.tweet))
 
@@ -155,8 +149,8 @@ export default class Timeline {
      * await Timeline.get('user').then(arr => arr[0])
      * ```
      */
-    static latest = (username: string, options: Partial<TweetOptions> = {}, auth: AuthOptions) =>
-        Timeline.get(username, options, auth).then(arr => arr[0])
+    static latest = (username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) =>
+        Timeline.get(username, auth, options).then(arr => arr[0])
 }
 
 class TimelineTweet {

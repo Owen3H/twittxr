@@ -49,10 +49,9 @@ describe('Timeline get', async () => {
     // TODO: Investigate why these fail.
     describe('correctly gets matching tweets according to options', async () => {
         it('includes retweets', async () => {
-            const timeline = await Timeline.get('elonmusk', {
+            const timeline = await Timeline.get('elonmusk', { cookie }, {
                 replies: false, 
-                retweets: true,
-                cookie
+                retweets: true
             })
 
             expect(timeline).toBeTruthy()
@@ -69,10 +68,9 @@ describe('Timeline get', async () => {
         })
 
         it('includes replies', async () => {
-            const timeline = await Timeline.get('elonmusk', {
+            const timeline = await Timeline.get('elonmusk', { cookie }, {
                 replies: true, 
-                retweets: false,
-                cookie
+                retweets: false
             })
 
             expect(timeline).toBeTruthy()
