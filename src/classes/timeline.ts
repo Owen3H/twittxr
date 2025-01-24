@@ -104,10 +104,6 @@ export default class Timeline {
      * - Replies and retweets are not included.
      * - No cookie is set - must be user defined.
      * 
-     * @param username The user handle without the ``@``.
-     * @param auth The auth to use with the request, a token may be required! See {@link AuthOptions}.
-     * @param options The options to use with the request, see {@link TweetOptions}.
-     * 
      * Example:
      * ```js
      * await Timeline.get('elonmusk', { cookie: process.env.TWITTER_COOKIE }, { 
@@ -115,6 +111,9 @@ export default class Timeline {
      *ㅤㅤretweets: false, 
      * })
      * ```
+     * @param username The user handle without the `@`.
+     * @param auth The auth options to use with the request. See {@link AuthOptions}.
+     * @param options The tweet options to use with the request, see {@link TweetOptions}.
      */
     static async get(username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) {
         // Since `replies` could be `any` when compiled, check defined with !!

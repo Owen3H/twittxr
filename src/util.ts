@@ -104,8 +104,11 @@ const extractTimelineData = (html: string) => {
     }
 }
 
+const isNumeric = (string) => Number.isFinite(+string)
+
 export {
     sendReq, buildCookieString,
     getPuppeteerContent,
-    extractTimelineData
+    extractTimelineData,
+    isNumeric
 }

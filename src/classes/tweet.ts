@@ -1,5 +1,5 @@
 import type { RawTweet, TweetEntities } from "../types.js"
-import { sendReq } from "../util.js"
+import { isNumeric, sendReq } from "../util.js"
 
 import User from "./user.js"
 import { FetchError } from "./errors.js"
@@ -41,10 +41,15 @@ class TweetEmbed {
     }
 }
 
-// Grabbed from react-tweet. <3
-const getTokenFromID = (id: string | number) => (Number(id) / 1e15) * Math.PI
-    .toString(36) // Base 36 (a-z, 0-9)
-    .replace(/(0+|\.)/g, '') // Strip trailing zeros.
+// Grabbed from react-tweet and edited a bit :P
+function tokenFromID(id: string) {
+    if (!isNumeric(id)) {
+        throw new Error(`Could not generate token from non-numeric id: ${id}`)
+    }
+
+    return ((Number(id) / 1e15) * Math.PI)
+        .toString(36) // Base 36 (a-z, 0-9)
+        .replace(/(0+|\.)/g, '') // Strip trailing zeros.
 }
 
 const SYNDICATION_TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
@@ -52,7 +57,7 @@ const SYNDICATION_TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result?'
 export default class Tweet {
     static async #fetchTweet(id: string) {
         try {
-            const token = getTokenFromID(id)
+            const token = tokenFromID(id)
             const url = `${SYNDICATION_TWEET_URL}id=${id}&token=${token}&dnt=1`
 
             const data = await sendReq(url).then((res: any) => res.json())
