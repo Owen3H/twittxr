@@ -65,8 +65,8 @@ const tweet = await Tweet.get('1674865731136020505')
 ### Get a user Timeline
 ```ts
 // The retweets and replies default to false.
-const timelineWithRts = await Timeline.get('elonmusk', { 
-  cookie: process.env.TWITTER_COOKIE,
+const cookie = process.env.TWITTER_COOKIE
+const timelineWithRts = await Timeline.get('elonmusk', { cookie }, { 
   retweets: true,
   replies: false, // This is the user's replies, not replies to their Tweets.
 })
