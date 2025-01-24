@@ -1,7 +1,7 @@
 {
   "name": "twittxr",
   "description": "Extract information from Twitter using the Syndication API.",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "author": "Owen3H",
   "license": "MIT",
   "homepage": "https://github.com/Owen3H/twittxr#readme",
