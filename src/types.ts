@@ -124,8 +124,13 @@ export interface MediaSize {
 }
 
 export interface RawTimelineResponse {
+    page: string
+    query: {
+        screenName: string
+    }
     props: {
         pageProps: {
+            lang: string
             timeline: {
                 entries: RawTimelineEntry[]
             }

@@ -19,7 +19,7 @@ import type {
 const domain = 'https://x.com'
 
 type PuppeteerOpts = { 
-    use: 'always' | 'fallback' | 'never', 
+    use: 'always' | 'fallback', 
     config: PuppeteerConfig 
 }
 
@@ -27,7 +27,7 @@ export const TIMELINE_URL = 'https://syndication.twitter.com/srv/timeline-profil
 
 export default class Timeline {
     private static puppeteer: PuppeteerOpts = { 
-        use: 'never',
+        use: 'fallback',
         config: null
     }
 
@@ -54,7 +54,7 @@ export default class Timeline {
     }
 
     static async disablePuppeteer() {
-        this.puppeteer.use = 'never'
+        this.puppeteer.use = 'fallback'
     }
 
     private static async setBasicBrowser() {
@@ -86,22 +86,28 @@ export default class Timeline {
      * @see {@link TIMELINE_URL}
      */
     static async fetch(username: string, cookie?: string): Promise<RawTimelineEntry[]> {
-        const url = `${TIMELINE_URL}${username}`
-        const html = this.puppeteer.use
-            ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
-            : await sendReq(url, cookie).then((body: any) => body.text()).catch(async err => {
-                // Can't fallback, re-throw original error.
+        const url = TIMELINE_URL + username
+
+        let html: string = null
+        if (this.puppeteer.use == "always") {
+            html = await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
+        } else {
+            try {
+                html = await sendReq(url, cookie).then((body: any) => body.text())
+            } catch(err) {
+                //#region Try use puppeteer as a fallback
                 const puppeteer = await import('puppeteer')
-                if (!puppeteer) throw err
+                if (!puppeteer) throw err // Re-throw as we have no puppeteer to fall back to.
 
                 const config = this.puppeteer.config
                 if (!config.browser) await this.usePuppeteer(null, true)
 
-                const content = await getPuppeteerContent({ ...config, url, cookie })
-                //console.log(content)
-                
-                return content
-            })
+                html = await getPuppeteerContent({ ...config, url, cookie })
+                //console.log(html)
+
+                //#endregion
+            }
+        }
 
         const data = extractTimelineData(html)
         if (!data) throw new ParseError('Script tag not found or JSON data is missing.')
