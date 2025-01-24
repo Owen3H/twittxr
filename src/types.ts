@@ -1,20 +1,13 @@
 import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Impossible<K extends keyof any> = {
-    [P in K]: never
-}
+type Impossible<K extends keyof any> = { [P in K]: never }
 
 export type Exact<T, U extends T = T> = 
     U & Impossible<Exclude<keyof U, keyof T>>
 
-type DynamicProps<T> = {
-    [key: string]: T
-}
-
-type DeepInfer<T> = {
-    [K in keyof T]: T[K]
-}
+type DynamicProps<T> = { [key: string]: T }
+type DeepInfer<T> = { [K in keyof T]: T[K] }
 
 type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
 
@@ -32,7 +25,7 @@ export type TwitterCookies = Exact<{
     kdt: string
 }>
 
-export type BaseUser = {
+export interface BaseUser {
     name: string
     screen_name: string
     id_str: string
@@ -80,12 +73,12 @@ export interface RawTimelineUser extends BaseUser {
     show_all_inline_media: boolean
 }
 
-export type UserEntities = {
+export interface UserEntities {
     description: { urls: DynamicProps<string>[] }
     url: { urls: UrlEntity[] }
 }
 
-export type TweetEntities = {
+export interface TweetEntities {
     hashtags: { text: string }[]
     symbols: { text: string }[]
     media: TweetMedia[]
@@ -112,7 +105,7 @@ export interface TweetMedia extends UrlEntity {
     }
 }
 
-export type UrlEntity = {
+export interface UrlEntity {
     url: string
     expanded_url: string
     display_url: string
@@ -124,13 +117,13 @@ export type UrlEntity = {
     }
 }
 
-export type MediaSize = {
+export interface MediaSize {
     w: number
     h: number
     resize: string
 }
 
-export type RawTimelineResponse = {
+export interface RawTimelineResponse {
     props: {
         pageProps: {
             timeline: {
@@ -140,7 +133,7 @@ export type RawTimelineResponse = {
     }
 }
 
-export type RawTimelineEntry = {
+export interface RawTimelineEntry {
     type: string
     entry_id: string
     content: {
@@ -148,7 +141,7 @@ export type RawTimelineEntry = {
     }
 }
 
-export type RawTimelineTweet = {
+export interface RawTimelineTweet {
     id: number
     id_str: string
     conversation_id_str: string
@@ -173,7 +166,7 @@ export type RawTimelineTweet = {
     location: string
 }
 
-export type RawTweet = {
+export interface RawTweet {
     id_str: string
     created_at: string
     isEdited: boolean
@@ -193,12 +186,12 @@ export interface RawUser extends BaseUser {
     verified: boolean
 }
 
-export type TweetOptions = {
+export interface TweetOptions {
     retweets: boolean
     replies: boolean
 }
 
-export type AuthOptions = {
+export interface AuthOptions {
     cookie?: string | TwitterCookies
     //token: string // TODO: If timeline doesn't need this, we can just remove it as Tweet.get already requires it.
 }
