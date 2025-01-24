@@ -77,7 +77,6 @@ export interface RawTimelineUser extends BaseUser {
     translator_type: string
     withheld_scope: string
     withheld_in_countries: any[] // Not sure of exact type yet, likely string?
-    notificiations: boolean
     show_all_inline_media: boolean
 }
 

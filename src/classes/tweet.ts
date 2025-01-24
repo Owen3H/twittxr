@@ -11,7 +11,7 @@ function tokenFromID(id: string) {
         .replace(/(0+|\.)/g, '') // Strip trailing zeros.
 }
 
-const SYNDICATION_TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result'
+export const TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result'
 
 export default class Tweet {
     /**
@@ -22,7 +22,7 @@ export default class Tweet {
      * In most cases, it is suggested to use `Tweet.get()` instead which checks for tweet existence.
      * @param id The ID of the tweet to fetch - must represent a valid ID.
      * @returns The tweet object ({@link RawTweet}) from the JSON response.
-     * @see {@link SYNDICATION_TWEET_URL}
+     * @see {@link TWEET_URL}
      */
     static async fetch(id: string | number): Promise<RawTweet> {
         try {
@@ -35,7 +35,7 @@ export default class Tweet {
                 throw new Error(`Tweet ID must be a number!`)
             }
 
-            const url = new URL(SYNDICATION_TWEET_URL)
+            const url = new URL(TWEET_URL)
             url.searchParams.set("id", id)
             url.searchParams.set("token", tokenFromID(id))
             url.searchParams.set("dnt", "1") // Send Do-Not-Track signal.

@@ -3,7 +3,7 @@ import {
     expectTypeOf, assertType
 } from 'vitest'
 
-import { Tweet, type TweetEmbed } from '../src/classes/tweet.js'
+import { Tweet, type TweetEmbed } from '../src'
 
 it('Tweet class is setup correctly', () => {
     expect(Tweet).toHaveProperty('get')

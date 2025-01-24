@@ -12,6 +12,7 @@ import type {
     RawTimelineEntry,
     RawTimelineResponse,
     RawTimelineTweet, RawTimelineUser,
+    TweetEntities,
     TweetOptions, UserEntities 
 } from "../types.js"
 
@@ -22,8 +23,9 @@ type PuppeteerOpts = {
     config: PuppeteerConfig 
 }
 
+export const TIMELINE_URL = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
+
 export default class Timeline {
-    static readonly url = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
     private static puppeteer: PuppeteerOpts = { 
         use: 'never',
         config: null
@@ -73,7 +75,18 @@ export default class Timeline {
         return puppeteer
     }
 
-    static async #fetchUserTimeline(url: string, cookie?: string): Promise<RawTimelineEntry[]> {
+    /**
+     * Fetches a user's timeline by calling to the Syndication API's timeline embed endpoint and parsing the resulting HTML text into usable JS objects.\
+     * To get a tweet from the collection of entries, simply grab the `content.tweet` of an element which will give you a {@link RawTimelineTweet}.
+     * 
+     * **NOTE**: This method should only be used if you need the raw timeline data for whatever reason.\
+     * In most cases, it is suggested to use `Timeline.get()` which includes additional filter options.
+     * @param username The user handle without the `@`.
+     * @param cookie The full acquired cookie string.
+     * @see {@link TIMELINE_URL}
+     */
+    static async fetch(username: string, cookie?: string): Promise<RawTimelineEntry[]> {
+        const url = `${TIMELINE_URL}${username}`
         const html = this.puppeteer.use
             ? await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
             : await sendReq(url, cookie).then((body: any) => body.text()).catch(async err => {
@@ -98,7 +111,7 @@ export default class Timeline {
     }
 
     /**
-     * Fetches all tweets by the specified user. 
+     * Retrieves all tweets from an account by their username/handle. 
      * 
      * **Default behaviour**
      * - Replies and retweets are not included.
@@ -111,17 +124,14 @@ export default class Timeline {
      *ㅤㅤretweets: false, 
      * })
      * ```
-     * @param username The user handle without the `@`.
+     * @param username The user's handle without the `@`.
      * @param auth The auth options to use with the request. See {@link AuthOptions}.
      * @param options The tweet options to use with the request, see {@link TweetOptions}.
      */
     static async get(username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) {
-        // Since `replies` could be `any` when compiled, check defined with !!
-        const endpoint = `${this.url}${username}`
-
         try {
             const parsedCookie = typeof auth.cookie === 'string' ? auth.cookie : buildCookieString(auth.cookie)
-            const timeline = await this.#fetchUserTimeline(endpoint, parsedCookie)
+            const timeline = await this.fetch(username, parsedCookie)
 
             // TEMPORARY DEBUGGING
             // if (username == "rileyreidx3") 
@@ -153,11 +163,16 @@ export default class Timeline {
 }
 
 class TimelineTweet {
-    readonly id: string
+    readonly id: number
+    readonly idStr: string
+
     readonly text: string
+    readonly fullText: string
+    readonly displayTextRange: number[]
+
     readonly createdAt: string
-    readonly inReplyToName: string
-    readonly link: string
+    readonly inReplyToName?: string
+    readonly permalink: string
     readonly replyCount: number
     readonly quoteCount: number
     readonly retweetCount: number
@@ -165,17 +180,39 @@ class TimelineTweet {
 
     readonly user: TimelineUser
     readonly sensitive?: boolean
-    
+
+    readonly favourited: boolean
+    readonly retweeted: boolean
+    readonly retweetedStatus: TimelineTweet
+
+    readonly entities?: Partial<TweetEntities>
+    readonly extendedEntities?: Partial<TweetEntities>
+
     constructor(data: RawTimelineTweet) {
-        this.id = data.id_str ?? data.conversation_id_str
+        this.id = data.id
+        this.idStr = data.id_str
+
         this.text = data.text
+        this.fullText = data.full_text
+        this.displayTextRange = data.display_text_range
+
         this.createdAt = data.created_at
-        this.link = domain + data.permalink
+        this.permalink = data.permalink
         this.quoteCount = data.quote_count
         this.replyCount = data.reply_count
         this.retweetCount = data.retweet_count
         this.likeCount = data.favorite_count
         this.sensitive = data.possibly_sensitive ?? false
+
+        this.favourited = data.favorited
+        this.retweeted = data.retweeted
+
+        this.entities = data.entities
+        this.extendedEntities = data.extended_entities
+
+        if (data.retweeted_status) {
+            this.retweetedStatus = new TimelineTweet(data.retweeted_status)
+        }
 
         if (data.user) {
             this.user = new TimelineUser(data.user)
@@ -193,30 +230,48 @@ class TimelineTweet {
     get isReply() {
         return !!this.inReplyToName
     }
+    
+    get link() {
+        return domain + this.permalink
+    }
 }
 
 class TimelineUser extends User {
-    readonly blocking: boolean
+    readonly url: string
     readonly createdAt: string
     readonly defaultProfile: boolean
     readonly defaultProfileImage: boolean
     readonly description: string
     readonly entities: UserEntities
-    readonly followersCount: number
-    readonly friendsCount: number
-    readonly statusesCount: number
-    readonly likesCount: number
-    readonly mediaCount: number
-    readonly location: string
-    readonly protected: boolean
-    readonly url: string
-    readonly time_zone: string
-    readonly listedCount: number
-    readonly utc_offset: number
+
     readonly notifications: boolean
+    readonly protected: boolean
+    readonly blocking: boolean
     readonly following: boolean
     readonly followedBy: boolean
     readonly followRequestSent: boolean
+
+    readonly followersCount: number
+    readonly fastFollowersCount: number
+    readonly normalFollowersCount: number
+    readonly friendsCount: number
+    readonly statusesCount: number
+    readonly favouritesCount: number
+    readonly mediaCount: number
+    readonly listedCount: number
+
+    readonly location: string
+    readonly timezone: string
+    readonly utcOffset: number
+
+    readonly isTranslator: boolean
+    readonly translatorType: string
+
+    readonly hasCustomTimelines: boolean
+    readonly showAllInlineMedia: boolean
+
+    readonly withheldScope: string
+    readonly withheldInCountries: any[] // Not sure of exact type yet, likely string?
 
     constructor(data: RawTimelineUser) {
         super(data)
@@ -225,26 +280,41 @@ class TimelineUser extends User {
         this.createdAt = data.created_at
         this.defaultProfile = data.default_profile
         this.defaultProfileImage = data.default_profile_image
+        this.description = data.description
         this.entities = data.entities
-        
-        this.blocking = data.blocking
-        this.protected = data.protected
+
         this.notifications = data.notifications
+        this.protected = data.protected
+        this.blocking = data.blocking
         this.following = data.following
         this.followedBy = data.followed_by
         this.followRequestSent = data.follow_request_sent
 
-        this.followersCount = data.fast_followers_count
-        this.followersCount = data.normal_followers_count
-        this.likesCount = data.favourites_count
+        this.followersCount = data.followers_count
+        this.fastFollowersCount = data.fast_followers_count
+        this.normalFollowersCount = data.normal_followers_count
+        this.favouritesCount = data.favourites_count
         this.friendsCount = data.friends_count
         this.mediaCount = data.media_count
         this.statusesCount = data.statuses_count
         this.listedCount = data.listed_count
 
         this.location = data.location
-        this.time_zone = data.time_zone
-        this.utc_offset = data.utc_offset
+        this.timezone = data.time_zone
+        this.utcOffset = data.utc_offset
+
+        this.isTranslator = data.is_translator
+        this.translatorType = data.translator_type
+
+        this.hasCustomTimelines = data.has_custom_timelines
+        this.showAllInlineMedia = data.show_all_inline_media
+
+        this.withheldScope = data.withheld_scope
+        this.withheldInCountries = data.withheld_in_countries
+    }
+
+    get likes() {
+        return this.favouritesCount
     }
 }
 

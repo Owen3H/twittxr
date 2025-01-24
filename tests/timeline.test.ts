@@ -1,4 +1,4 @@
-import { Timeline, type TimelineTweet } from '../src/classes/timeline.js'
+import { Timeline, type TimelineTweet } from '../src'
 
 import { 
     it, describe,
