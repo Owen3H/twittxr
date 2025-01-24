@@ -23,6 +23,8 @@ it('single tweet can be retrieved successfully', async () => {
     expect(tweet.id).toBeDefined()
     expect(tweet.createdAt).toBeDefined()
     expect(tweet.text).toBeDefined()
+
+    //console.log(tweet)
 })
 
 // describe('Tweet get', () => {

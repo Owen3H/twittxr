@@ -17,7 +17,7 @@ const headers = (cookie?: string) => {
     return obj
 }
 
-const buildCookieString = (cookies: TwitterCookies) => {
+export const buildCookieString = (cookies: TwitterCookies) => {
     const obj = {
         ...cookies,
         dnt: 1,
@@ -37,13 +37,14 @@ const buildCookieString = (cookies: TwitterCookies) => {
  * response body or an {@link HttpError} including the status code.
  * @internal
  */
-async function sendReq(url: string, cookie?: string) {
+export async function sendReq(url: string, cookie?: string) {
     const res = await request(url, { headers: headers(cookie) })
     if (!res) throw new FetchError(`Received null/undefined fetching '${url}'`)
 
     const code = res.statusCode
-    if (code !== 200 && code !== 304)
+    if (code !== 200 && code !== 304) {
         throw new HttpError(`Server responded with an error!\nStatus code: ${code}`, code)
+    }
 
     // When running outside of Node, built-in fetch is used - therefore, 
     // fallback to original response since `body` won't be defined.
@@ -55,7 +56,7 @@ async function sendReq(url: string, cookie?: string) {
  * using Puppeteer to navigate to the API endpoint.
  * @internal
  */
-async function getPuppeteerContent(config: PuppeteerConfig & { 
+export async function getPuppeteerContent(config: PuppeteerConfig & { 
     url: string,
     cookie?: string
 }) {
@@ -64,15 +65,17 @@ async function getPuppeteerContent(config: PuppeteerConfig & {
 
     try {
         if (!page) {
-            if (browser) page = await browser.newPage()
-            else throw new ConfigError('Failed to use Puppeteer! Either `page` or `browser` need to be specified.') 
+            if (!browser) throw new ConfigError('Failed to use Puppeteer! Either `page` or `browser` need to be specified.') 
+            page = await browser.newPage()
         }
 
-        if (hasProp(page, 'setBypassCSP'))
+        if (hasProp(page, 'setBypassCSP')) {
             await page.setBypassCSP(true)
+        }
 
-        if (hasProp(page, 'setExtraHTTPHeaders'))
+        if (hasProp(page, 'setExtraHTTPHeaders')) {
             await page.setExtraHTTPHeaders(headers(cookie))
+        }
         
         await page.goto(url, { waitUntil: 'load' })
         return await page.content()
@@ -88,7 +91,7 @@ async function getPuppeteerContent(config: PuppeteerConfig & {
  * response from the inputted timeline HTML string.
  * @internal
  */
-const extractTimelineData = (html: string) => {
+export const extractTimelineData = (html: string) => {
     const scriptId = `__NEXT_DATA__`
     const regex = new RegExp(`<script id="${scriptId}" type="application\/json">([^>]*)<\/script>`)
 
@@ -104,11 +107,4 @@ const extractTimelineData = (html: string) => {
     }
 }
 
-const isNumeric = (string) => Number.isFinite(+string)
-
-export {
-    sendReq, buildCookieString,
-    getPuppeteerContent,
-    extractTimelineData,
-    isNumeric
-}
+export const isNumeric = (str: string) => Number.isFinite(+str)
