@@ -24,51 +24,6 @@ which is used by embedded widgets, though there are some notable limitations by 
 #### ❌ Limitations
 - When getting a Timeline, only up to `100` Tweets can be returned. (May be `20` in some cases)
 
-## Authentication
-Twitter is now known to require a cookie to return any data!<br>
-I strongly advise you pass the `cookie` parameter in all of your requests.
-
-***How do I get my session cookie?***
-1. Login to Twitter -> Right click -> **Inspect Element**
-2. Select the **Application** tab -> Refresh the page -> Find the **Cookies** section.
-3. Note down the cookies labelled `guest_id`, `auth_token`, `ct0` and `kdt`.
-
-Now you have two options to store and use these cookies.
-
-### Option A - Building the string manually
-Once you have your cookies, build a string in your `.env` file that follows the following format:
-```bash
-TWITTER_COOKIE="guest_id=someValue; auth_token=someValue; ct0=someValue; kdt=someValue; dnt=1;"
-```
-
-This way we only store one single line in the file and the `dnt` (Do-Not-Track) cookie can be customised if desired.\
-Once complete, simply reference the cookie like so when passing it to methods requiring auth.
-```ts
-const cookie = process.env.TWITTER_COOKIE
-```
-
-### Option B - Using `buildCookieString`
-This way is slightly more verbose and always includes a `dnt=1` cookie for you, however - we must split the cookies onto multiple lines.
-
-```bash
-GUEST_ID="someValue"
-AUTH_TOKEN="someValue"
-CT0="someValue"
-KDT="someValue"
-```
-
-We can then make use of the provided `buildCookieString` helper method before passing to methods requiring auth.
-```ts
-import { buildCookieString } from "twittxr"
-
-const cookie = buildCookieString({
-    guest_id: process.env.GUEST_ID,
-    auth_token: process.env.AUTH_TOKEN,
-    ct0: process.env.CT0,
-    kdt: process.env.KDT
-})
-```
-
 ## Installation
 ```console
 bun add twittxr
@@ -80,6 +35,58 @@ This can potentially avoid issues with Cloudflare. Ex: "403 Forbidden".
 ```console
 bun add twittxr puppeteer
 ```
+
+## Authentication
+Twitter is now known to require a cookie to return any data!<br>
+I strongly advise you pass the `cookie` parameter in all of your requests.
+
+***How do I get my session cookie?***
+1. Login to Twitter -> Right click -> **Inspect Element**
+2. Select the **Application** tab -> Refresh the page -> Find the **Cookies** section.
+3. Note down the cookies labelled `guest_id`, `auth_token`, `ct0` and `kdt`.
+
+Now you have two options to store and use these cookies.
+
+<details>
+  <summary><b>Option A</b> - Building the string manually</summary>
+
+  Once you have your cookies, build a string in your `.env` file that follows the following format:
+
+  ```bash
+  TWITTER_COOKIE="guest_id=someValue; auth_token=someValue; ct0=someValue; kdt=someValue; dnt=1;"
+  ```
+
+  This way we only store one single line in the file and the `dnt` (Do-Not-Track) cookie can be customised if desired.\
+  Once complete, simply reference the cookie like so when passing it to methods requiring auth.
+  ```ts
+  const cookie = process.env.TWITTER_COOKIE
+  ```
+</details>
+
+<details>
+  <summary><b>Option B</b> - Using <code>buildCookieString</code></summary>
+
+  This way is slightly more verbose and always includes a `dnt=1` cookie for you but requires you to use multiple lines in your `.env` file.
+
+  ```bash
+  GUEST_ID="someValue"
+  AUTH_TOKEN="someValue"
+  CT0="someValue"
+  KDT="someValue"
+  ```
+
+  We can then make use of the provided `buildCookieString` helper method before passing to methods requiring auth.
+  ```ts
+  import { buildCookieString } from "twittxr"
+
+  const cookie = buildCookieString({
+      guest_id: process.env.GUEST_ID,
+      auth_token: process.env.AUTH_TOKEN,
+      ct0: process.env.CT0,
+      kdt: process.env.KDT
+  })
+  ```
+</details>
 
 ## Usage
 ```ts
