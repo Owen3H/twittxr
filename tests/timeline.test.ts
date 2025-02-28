@@ -5,7 +5,7 @@ import {
     expect, expectTypeOf, assertType
 } from 'vitest'
 
-it('timeline is setup correctly', () => {
+it('Timeline class is setup correctly', () => {
     expect(Timeline).toHaveProperty('get')
     expect(Timeline).toHaveProperty('latest')
 

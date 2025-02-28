@@ -18,7 +18,7 @@ which is used by embedded widgets, though there are some notable limitations by 
 - Can include retweets and/or replies by the user.
 - Option to pass cookie object or string to get **Sensitive/NSFW** Tweets.
 - Ability to pass a [Puppeteer](https://pptr.dev) page, bypassing potential API auth issues.
-- Works in and out of **Node** by using the fast `request` method from **Undici**, falling back to native `fetch` in the browser.
+- Falls back to native `fetch` in the browser, allowing use outside of **Node**.
 - Intuitive syntax and included type definitions.
 
 #### ❌ Limitations
@@ -29,14 +29,45 @@ Twitter is now known to require a cookie to return any data!<br>
 I strongly advise you pass the `cookie` parameter in all of your requests.
 
 ***How do I get my session cookie?***
-1. [Click here](https://syndication.twitter.com/srv/timeline-profile/screen-name/elonmusk) -> Right click -> **Inspect Element**
-2. Refresh the page -> Select the **Network** tab -> Find the request with the `document` type.
-3. Under **Request Headers**, locate the key named `Cookie` and copy the whole string.
-4. Store this in an `.env` file like so:
-  
-    ```js
-    TWITTER_COOKIE="yourCookieStringHere"
-    ```
+1. Login to Twitter -> Right click -> **Inspect Element**
+2. Select the **Application** tab -> Refresh the page -> Find the **Cookies** section.
+3. Note down the cookies labelled `guest_id`, `auth_token`, `ct0` and `kdt`.
+
+Now you have two options to store and use these cookies.
+
+### Option A - Building the string manually
+Once you have your cookies, build a string in your `.env` file that follows the following format:
+```bash
+TWITTER_COOKIE="guest_id=someValue; auth_token=someValue; ct0=someValue; kdt=someValue; dnt=1;"
+```
+
+This way we only store one single line in the file and the `dnt` (Do-Not-Track) cookie can be customised if desired.\
+Once complete, simply reference the cookie like so when passing it to methods requiring auth.
+```ts
+const cookie = process.env.TWITTER_COOKIE
+```
+
+### Option B - Using `buildCookieString`
+This way is slightly more verbose and always includes a `dnt=1` cookie for you, however - we must split the cookies onto multiple lines.
+
+```bash
+GUEST_ID="someValue"
+AUTH_TOKEN="someValue"
+CT0="someValue"
+KDT="someValue"
+```
+
+We can then make use of the provided `buildCookieString` helper method before passing to methods requiring auth.
+```ts
+import { buildCookieString } from "twittxr"
+
+const cookie = buildCookieString({
+    guest_id: process.env.GUEST_ID,
+    auth_token: process.env.AUTH_TOKEN,
+    ct0: process.env.CT0,
+    kdt: process.env.KDT
+})
+```
 
 ## Installation
 ```console
@@ -65,38 +96,35 @@ const tweet = await Tweet.get('1674865731136020505')
 ### Get a user Timeline
 ```ts
 // The retweets and replies default to false.
-const cookie = process.env.TWITTER_COOKIE
 const timelineWithRts = await Timeline.get('elonmusk', { cookie }, { 
   retweets: true,
   replies: false, // This is the user's replies, not replies to their Tweets.
 })
-``` 
+```
 
 ### Using Puppeteer
 > **Note**
 > By default, Puppeteer will be used as a fallback for failed requests - if installed.<br>
 > However, it is possible to solely use Puppeteer by calling `await usePuppeteer()`.
 
-```js
+```ts
 import { Timeline } from 'twittxr'
 ```
 
 <details>
   <summary>No config</summary>
 
-```js
+```ts
 // Launches a basic headless browser & automatically closes the page.
 await Timeline.usePuppeteer()
-const tweets = await Timeline.get('elonmusk', { 
-  cookie: process.env.TWITTER_COOKIE
-})
+const tweets = await Timeline.get('elonmusk', { cookie })
 ```
 </details>
 
 <details>
   <summary>With custom browser</summary>
 
-```js
+```ts
 const puppeteer = require('puppeteer-extra')
 
 // Use plugins if desired
@@ -106,9 +134,7 @@ const browser = await puppeteer.launch({ headless: true })
 
 // Creates a new page and closes it automatically after every .get() call
 await Timeline.usePuppeteer({ browser, autoClose: true })
-const tweets = await Timeline.get('elonmusk', { 
-  cookie: process.env.TWITTER_COOKIE
-})
+const tweets = await Timeline.get('elonmusk', { cookie })
 ```
 </details>
 
@@ -122,9 +148,7 @@ const page = await browser.newPage()
 
 // Pass the page, but do not automatically close it.
 await Timeline.usePuppeteer({ page, autoClose: false })
-const tweets = await Timeline.get('elonmusk', { 
-  cookie: process.env.TWITTER_COOKIE
-})
+const tweets = await Timeline.get('elonmusk', { cookie })
 
 await page.goto('https://google.com') // Continue to manipulate the page.
 await page.close() // Close the page manually.

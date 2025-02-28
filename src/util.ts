@@ -18,16 +18,12 @@ const headers = (cookie?: string) => {
 }
 
 export const buildCookieString = (cookies: TwitterCookies) => {
-    const obj = {
-        ...cookies,
-        dnt: 1,
-        des_opt_in: "N",
-        twtr_pixel_opt_in: "N",
-        at_check: true
-    }
+    const entries = Object.entries(cookies)
 
-    let str = ""
-    Object.entries(obj).forEach(e => str += `${e[0]}=${e[1]}; `)
+    let str = "dnt=1; "
+    for (const [k, v] of entries) {
+        str += `${k}=${v}; `
+    }
 
     return str.trimEnd()
 }

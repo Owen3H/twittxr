@@ -20,7 +20,7 @@ export interface PuppeteerConfig extends LaunchOptions {
 export type TwitterCookies = Exact<{
     guest_id?: string
     auth_token: string
-    auth_multi?: string
+    //auth_multi?: string
     ct0: string
     kdt: string
 }>

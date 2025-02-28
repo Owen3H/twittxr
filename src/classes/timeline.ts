@@ -38,7 +38,6 @@ export default class Timeline {
      * @param config Used to configure how Puppeteer should behave.
      */
     static async usePuppeteer(config?: PuppeteerConfig, asFallback = false) {
-        //if (!this.puppeteer.use) return
         this.puppeteer.use = asFallback ? 'fallback' : 'always'
 
         if (!config) {
