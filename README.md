@@ -37,7 +37,7 @@ bun add twittxr puppeteer
 ```
 
 ## Authentication
-Twitter is now known to require a cookie to return any data!<br>
+Twitter is now known to require a cookie to return timeline data!<br>
 I strongly advise you pass the `cookie` parameter in all of your requests.
 
 ***How do I get my session cookie?***
@@ -95,12 +95,15 @@ const { Timeline, Tweet } = require('twittxr') // CommonJS
 ```
 
 ### Get a single Tweet
+No auth required.
 ```ts
 // Does not return the same type as Timeline.get()
-const tweet = await Tweet.get('1674865731136020505')
+const tweet = await Tweet.get(1674865731136020505) // Or string
 ```
 
 ### Get a user Timeline
+See the **Authentication** section to obtain a cookie string.
+
 ```ts
 // The retweets and replies default to false.
 const timelineWithRts = await Timeline.get('elonmusk', { cookie }, { 
