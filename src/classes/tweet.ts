@@ -13,7 +13,7 @@ function tokenFromID(id: string) {
 
 export const TWEET_URL = 'https://cdn.syndication.twimg.com/tweet-result'
 
-export default class Tweet {
+export default abstract class Tweet {
     /**
      * Fetches a tweet by its ID by calling to the Syndication API's tweet embed endpoint.\
      * The JSON object is immediately returned regardless of contents, please handle this accordingly!

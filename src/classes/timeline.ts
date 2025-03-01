@@ -25,7 +25,7 @@ type PuppeteerOpts = {
 
 export const TIMELINE_URL = 'https://syndication.twitter.com/srv/timeline-profile/screen-name/'
 
-export default class Timeline {
+export default abstract class Timeline {
     private static puppeteer: PuppeteerOpts = { 
         use: 'fallback',
         config: null
