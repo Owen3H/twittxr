@@ -1,16 +1,15 @@
 import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
 import type { TimelineTweet } from './classes/timeline.js'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Impossible<K extends keyof any> = { [P in K]: never }
 
 export type Exact<T, U extends T = T> = 
     U & Impossible<Exclude<keyof U, keyof T>>
 
 type DynamicProps<T> = { [key: string]: T }
-type DeepInfer<T> = { [K in keyof T]: T[K] }
+type Prettify<T> = { [K in keyof T]: T[K] }
 
-type LaunchOptions = DeepInfer<PuppeteerLaunchOptions>
+type LaunchOptions = Prettify<PuppeteerLaunchOptions>
 
 export interface PuppeteerConfig extends LaunchOptions {
     browser?: Browser

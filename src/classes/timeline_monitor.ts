@@ -1,4 +1,5 @@
 import mitt from 'mitt'
+import type { Handler, WildcardHandler } from 'mitt'
 
 import type { 
     AuthOptions,
@@ -9,20 +10,26 @@ import type {
 
 import { Timeline, TimelineTweet } from './timeline.js'
 
-type WatchedUser = {
+interface WatchedUser {
     tweetIds: Set<number>
-    scheduler: any
+    readonly scheduler: any
 }
+
+type TimelineEmitterWildcard = (type: '*', handler: WildcardHandler<TimelineEvents>) => void
+type TimelineEmitterOn = (<Key extends keyof TimelineEvents>(type: Key, handler: Handler<TimelineEvents[Key]>) => void) | TimelineEmitterWildcard
+type TimelineEmitterOff = (<Key extends keyof TimelineEvents>(type: Key, handler?: Handler<TimelineEvents[Key]>) => void) | TimelineEmitterWildcard
+
+type TimelineEmitterEmit = 
+    (<Key extends keyof TimelineEvents>(type: Key, event: TimelineEvents[Key]) => void) |
+    (<Key extends keyof TimelineEvents>(type: undefined extends TimelineEvents[Key] ? Key : never) => void)
 
 const USERNAME_MIN_LEN = 1
 const USERNAME_MAX_LEN = 50
 
-// TODO: Support monitoring users where we can start and stop them individually.
 export class TimelineMonitor {
-    readonly on
-    readonly off
-
-    private readonly emit
+    readonly on: TimelineEmitterOn
+    readonly off: TimelineEmitterOff
+    private readonly emit: TimelineEmitterEmit
 
     // Store all the users tweets so that we can tell the difference between a new tweet and deleted tweet.
     private watching: Map<string, WatchedUser> = new Map()

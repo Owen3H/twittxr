@@ -16,6 +16,7 @@ test('Timeline class is setup correctly', () => {
 describe('Timeline get', async () => {
     const cookie = process.env.TWITTER_COOKIE
     expect(cookie).toBeTruthy()
+    expect(cookie).toBeTypeOf('string')
 
     // it.skip('timeline can be retrieved after cutoff', async () => {
     //     let timeline = []
