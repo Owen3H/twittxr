@@ -1,11 +1,11 @@
 import { Timeline, type TimelineTweet } from '../src'
 
 import { 
-    it, describe,
+    test, it, describe,
     expect, expectTypeOf, assertType
 } from 'vitest'
 
-it('Timeline class is setup correctly', () => {
+test('Timeline class is setup correctly', () => {
     expect(Timeline).toHaveProperty('get')
     expect(Timeline).toHaveProperty('latest')
 

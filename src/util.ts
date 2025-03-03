@@ -43,7 +43,7 @@ export async function sendReq(url: string, cookie?: string) {
     }
 
     // When running outside of Node, built-in fetch is used - therefore, 
-    // fallback to original response since `body` won't be defined.
+    // fall back to original response since `body` won't be defined.
     return res.body ?? res
 }
 

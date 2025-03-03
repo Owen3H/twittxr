@@ -84,15 +84,16 @@ export default abstract class Timeline {
      * @param cookie The full acquired cookie string.
      * @see {@link TIMELINE_URL}
      */
-    static async fetch(username: string, cookie?: string): Promise<RawTimelineEntry[]> {
+    static async fetch(username: string, auth: AuthOptions): Promise<RawTimelineEntry[]> {
         const url = TIMELINE_URL + username
+        const parsedCookie = typeof auth.cookie === 'string' ? auth.cookie : buildCookieString(auth.cookie)
 
         let html: string = null
         if (this.puppeteer.use == "always") {
-            html = await getPuppeteerContent({ ...this.puppeteer.config, url, cookie }) 
+            html = await getPuppeteerContent({ ...this.puppeteer.config, url, cookie: parsedCookie }) 
         } else {
             try {
-                html = await sendReq(url, cookie).then((body: any) => body.text())
+                html = await sendReq(url, parsedCookie).then((body: any) => body.text())
             } catch(err) {
                 //#region Try use puppeteer as a fallback
                 const puppeteer = await import('puppeteer')
@@ -101,7 +102,7 @@ export default abstract class Timeline {
                 const config = this.puppeteer.config
                 if (!config.browser) await this.usePuppeteer(null, true)
 
-                html = await getPuppeteerContent({ ...config, url, cookie })
+                html = await getPuppeteerContent({ ...config, url, cookie: parsedCookie })
                 //console.log(html)
 
                 //#endregion
@@ -136,7 +137,7 @@ export default abstract class Timeline {
     static async get(username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) {
         try {
             const parsedCookie = typeof auth.cookie === 'string' ? auth.cookie : buildCookieString(auth.cookie)
-            const timeline = await this.fetch(username, parsedCookie)
+            const timeline = await this.fetch(username, { cookie: parsedCookie })
 
             // TEMPORARY DEBUGGING
             // if (username == "rileyreidx3") 
@@ -163,8 +164,9 @@ export default abstract class Timeline {
      * await Timeline.get('user').then(arr => arr[0])
      * ```
      */
-    static latest = (username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) =>
-        Timeline.get(username, auth, options).then(arr => arr[0])
+    static latest(username: string, auth: AuthOptions, options: Partial<TweetOptions> = {}) {
+        return Timeline.get(username, auth, options).then(arr => arr[0])
+    }
 }
 
 class TimelineTweet {

@@ -49,6 +49,7 @@
     "package.json"
   ],
   "dependencies": {
+    "mitt": "^3.0.1",
     "tslib": "latest",
     "undici-shim": "latest"
   },
