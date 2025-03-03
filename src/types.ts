@@ -205,8 +205,9 @@ export interface AuthOptions {
 export type TimelineEvents = {
     selfTweet: SelfTweetEvent
     error: {
-        err: string
-        msg: string
+        username: string
+        message: string
+        type: "FETCH_ERROR" | "INVALID_TIMELINE"
     }
 }
 

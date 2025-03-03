@@ -85,27 +85,58 @@ export class TimelineMonitor {
      */
     unwatch(username: string) {
         const watchedUser = this.watching.get(username)
-        if (watchedUser) {
-            clearInterval(watchedUser.scheduler)
-            this.watching.delete(username)
-            
-            return true
-        }
+        if (!watchedUser) return false
 
-        return false
+        globalThis.clearInterval(watchedUser.scheduler)
+        this.watching.delete(username)
+        
+        return true
     }
 
     private createScheduler(username: string, interval: number) {
         return globalThis.setInterval(async () => {
             const watchedUser = this.watching.get(username)
-            if (!watchedUser) return // User is not being watched but scheduler still runs? Probably didn't unwatch properly.
+            if (!watchedUser) {
+                // TODO: Implement this error properly.
+                // this.emit('error', {
+                //     username,
+                //     type: "USER_NOT_WATCHED",
+                //     message: `User ${username} is not being watched but their scheduler is still running!`
+                // })
+                
+                return
+            }
 
-            const timeline = await Timeline.fetch(username, this.authOpts)
+            //#region Fetch timeline and emit any errors
+            const timeline = await Timeline.fetch(username, this.authOpts).then(tl => {
+                if (!tl || tl.length < 1) {
+                    this.emit('error', { 
+                        username,
+                        type: "INVALID_TIMELINE",
+                        message: `Failed to fetch timeline of: ${username}. Make sure they are a valid user.\nValue: ${tl}`
+                    })
+
+                    return null
+                }
+
+                return tl
+            }).catch(err => {
+                this.emit('error', { 
+                    username, 
+                    type: "FETCH_ERROR", 
+                    message: `Error occurred fetching timeline of user: ${username}.\n${err.message}`
+                })
+
+                return null
+            })
+            //#endregion
+
+            if (!timeline) return
 
             const latestEntry = timeline[0]
             const latestTweetId = latestEntry.content.tweet.id
 
-            // Detected new tweet
+            //#region Detected new tweet
             if (!watchedUser.tweetIds.has(latestTweetId)) {
                 watchedUser.tweetIds.add(latestTweetId)
 
@@ -118,6 +149,7 @@ export class TimelineMonitor {
 
                 this.emit('selfTweet', selfTweetEvent)
             }
+            //#endregion
         }, interval)
     }
 
