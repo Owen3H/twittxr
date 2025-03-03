@@ -22,11 +22,11 @@ export class TimelineMonitor {
     readonly on
     readonly off
 
-    private emit
+    private readonly emit
 
     // Store all the users tweets so that we can tell the difference between a new tweet and deleted tweet.
     private watching: Map<string, WatchedUser> = new Map()
-    private authOpts: AuthOptions = null
+    private readonly authOpts: AuthOptions = null
 
     constructor(auth: AuthOptions) {
         const emitter = mitt.default<TimelineEvents>()
