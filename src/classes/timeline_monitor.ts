@@ -1,5 +1,4 @@
 import mitt from 'mitt'
-import type { EventType } from 'mitt'
 
 import type { 
     AuthOptions,
@@ -18,39 +17,24 @@ type WatchedUser = {
 const USERNAME_MIN_LEN = 1
 const USERNAME_MAX_LEN = 50
 
-class Emitter<Events extends Record<EventType, unknown>> {
-    private _on
-    get on() {
-        return this._on
-    }
-
-    private _off
-    get off() {
-        return this._off
-    }
-
-    protected emit
-
-    constructor() {
-        //@ts-expect-error
-        const emitter = mitt<Events>()
-
-        this._on = emitter.on
-        this._off = emitter.off
-        this.emit = emitter.emit
-    }
-}
-
 // TODO: Support monitoring users where we can start and stop them individually.
-export class TimelineMonitor extends Emitter<TimelineEvents> {
-    private authOpts: AuthOptions = null
+export class TimelineMonitor {
+    readonly on
+    readonly off
+
+    private emit
 
     // Store all the users tweets so that we can tell the difference between a new tweet and deleted tweet.
     private watching: Map<string, WatchedUser> = new Map()
+    private authOpts: AuthOptions = null
 
     constructor(auth: AuthOptions) {
-        super()
-        
+        const emitter = mitt.default<TimelineEvents>()
+
+        this.on = emitter.on
+        this.off = emitter.off
+        this.emit = emitter.emit
+
         this.authOpts = auth
     }
     
