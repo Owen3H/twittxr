@@ -1,8 +1,22 @@
 import mitt from 'mitt'
 import type { EventType } from 'mitt'
 
-import type { AuthOptions, RawTimelineEntry } from "../../src/types.js"
+import type { 
+    AuthOptions,
+    RawTimelineEntry,
+    SelfTweetEvent,
+    TimelineEvents
+} from "../../src/types.js"
+
 import { Timeline, TimelineTweet } from './timeline.js'
+
+type WatchedUser = {
+    tweetIds: Set<number>
+    scheduler: any
+}
+
+const USERNAME_MIN_LEN = 1
+const USERNAME_MAX_LEN = 50
 
 class Emitter<Events extends Record<EventType, unknown>> {
     private _on
@@ -25,28 +39,6 @@ class Emitter<Events extends Record<EventType, unknown>> {
         this._off = emitter.off
         this.emit = emitter.emit
     }
-}
-
-export interface SelfTweetEvent {
-    timelineEntry: RawTimelineEntry
-    getTweet(): TimelineTweet
-}
-
-// Can't be 'interface' as it won't satisfy Emitter.
-export type TimelineEvents = {
-    selfTweet: SelfTweetEvent
-    error: {
-        err: string
-        msg: string
-    }
-}
-
-const USERNAME_MIN_LEN = 1
-const USERNAME_MAX_LEN = 50
-
-type WatchedUser = {
-    tweetIds: Set<number>
-    scheduler: any
 }
 
 // TODO: Support monitoring users where we can start and stop them individually.
@@ -97,9 +89,8 @@ export class TimelineMonitor extends Emitter<TimelineEvents> {
     }
 
     /**
-     * Stops watching the user we specified with {@link watch} by clearing their associated scheduler and tweets - returning `true` if successful.\
+     * Stops watching a user (that was specified with {@link watch}) by clearing their associated scheduler and tweets, returning `true` if successful.\
      * If unwatch is called for a user who was not previously watched, this function will not clear anything and simply return `false`.
-     * @returns True if we successfully stopped watching the specified user, false otherwise.
      */
     unwatch(username: string) {
         const watchedUser = this.watching.get(username)
@@ -129,7 +120,7 @@ export class TimelineMonitor extends Emitter<TimelineEvents> {
 
                 const selfTweetEvent: SelfTweetEvent = {
                     timelineEntry: latestEntry,
-                    getTweet: function() {
+                    getTweet() {
                         return new TimelineTweet(this.timelineEntry.content.tweet)
                     }
                 }

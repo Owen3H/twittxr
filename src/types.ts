@@ -1,4 +1,5 @@
 import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer'
+import type { TimelineTweet } from './classes/timeline.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Impossible<K extends keyof any> = { [P in K]: never }
@@ -199,4 +200,18 @@ export interface TweetOptions {
 export interface AuthOptions {
     cookie?: string | TwitterCookies
     //token: string // TODO: If timeline doesn't need this, we can just remove it as Tweet.get already requires it.
+}
+
+// Can't be 'interface' as it won't satisfy Emitter.
+export type TimelineEvents = {
+    selfTweet: SelfTweetEvent
+    error: {
+        err: string
+        msg: string
+    }
+}
+
+export interface SelfTweetEvent {
+    timelineEntry: RawTimelineEntry
+    getTweet(): TimelineTweet
 }
