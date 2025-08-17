@@ -77,6 +77,9 @@ export class TimelineMonitor {
             tweetIds: this.timelineAsTweetIds(timeline),
             scheduler: this.createScheduler(username, interval)
         })
+
+        // The initial timeline we fetched to pre-fill the tweet ids for this user.
+        return timeline
     }
 
     /**

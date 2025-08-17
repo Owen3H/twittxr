@@ -3,14 +3,16 @@ import type { PuppeteerConfig, TwitterCookies } from './types.js'
 
 import { FetchError, ParseError, HttpError, ConfigError } from './classes/errors.js'
 
-const hasProp = (obj: unknown, name: string) =>
+export const isNumeric = (str: string) => Number.isFinite(+str)
+export const hasProp = (obj: unknown, name: string) =>
     Object.prototype.hasOwnProperty.call(obj, name)
 
 const mockAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0'
 
 const headers = (cookie?: string) => {
-    const obj = {
-        'User-Agent': mockAgent
+    const obj: { [k: string]: string } = {
+        'User-Agent': mockAgent,
+        'Origin': 'https://publish.twitter.com'
     }
 
     if (cookie) obj['Cookie'] = cookie
@@ -102,5 +104,3 @@ export const extractTimelineData = (html: string) => {
         return null
     }
 }
-
-export const isNumeric = (str: string) => Number.isFinite(+str)
